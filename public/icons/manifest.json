@@ -1,0 +1,1055 @@
+{
+  "revision": "242f7e883a6851e496ad01531ca499059230c57e",
+  "assets": [
+    {
+      "path": "decorations/1-blue.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_BLUE.png",
+      "sha256": "8bbfaa5d9faddf0d8065822d39ea3e4f41fad5d5281baab5375824f47df6b3f9"
+    },
+    {
+      "path": "decorations/1-brown.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_BROWN.png",
+      "sha256": "c4a7910b7515945cf16866bad34f8cf6c660cb5555bb77f94cca33d39658d67b"
+    },
+    {
+      "path": "decorations/1-emerald.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_EMERALD.png",
+      "sha256": "d39dccbf34d4e0952354714cf89345767acadd65bf90a9e6f262721cbced8f1c"
+    },
+    {
+      "path": "decorations/1-gray.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_GRAY.png",
+      "sha256": "753b530419df9da0bfd6e1e2648107d60d8a9eba6aa07aad97d0659566eacba3"
+    },
+    {
+      "path": "decorations/1-green.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_GREEN.png",
+      "sha256": "b8baa5e26a463f7962650eea07765b17b207b542ca0867078676fd08780ebd14"
+    },
+    {
+      "path": "decorations/1-ivory.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_IVORY.png",
+      "sha256": "eaf40cd93dd4c8dfea0ec857aeceba74a772a8d2ed9144bfbddbdc65d0a59157"
+    },
+    {
+      "path": "decorations/1-lemon.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_LEMON.png",
+      "sha256": "e281186702ff81ddec14f6f1b680c0df76f37ae7849ca054e6b0c218e7dfadaf"
+    },
+    {
+      "path": "decorations/1-moss-green.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_MOS.png",
+      "sha256": "4c557f0533d2edb9d4b93bc5f349075d68ad9d5b8681256c5366db43167be2b5"
+    },
+    {
+      "path": "decorations/1-pink.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_PINK.png",
+      "sha256": "f68b813a641b2e2e99790d1efaf2ddee2ab392662fb79480b6846985931176f6"
+    },
+    {
+      "path": "decorations/1-purple.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_PURPLE.png",
+      "sha256": "8d95e62e6a224b06dcb20624ce5abfad11b7447ce9558142acbe1734ff0ff7d2"
+    },
+    {
+      "path": "decorations/1-red.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_RED.png",
+      "sha256": "86b71d3c6665262e8d7ca3df63fd67cf74432f23984c6327ece9bd05e0b498e0"
+    },
+    {
+      "path": "decorations/1-rose.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_ROSE.png",
+      "sha256": "fafcddb239d777dde4ed1821bcbfdd72fbca51b6ecb19aec55adaebefc63665c"
+    },
+    {
+      "path": "decorations/1-sage-green.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_SGREEN.png",
+      "sha256": "527f0d744d445472c5ded44f26a961ccbd82003436bee64ba66889f1098db2a4"
+    },
+    {
+      "path": "decorations/1-sky.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_SKY.png",
+      "sha256": "f5c96de4255c73f024f7a11298cd546120fc51c9baa75ff1be2f7b4cf42b4515"
+    },
+    {
+      "path": "decorations/1-ultramarine.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_ULTRAMARINE.png",
+      "sha256": "2fadcf50b06c5543ae0bfa83c9c233d2c71465eb7b707c6260a1e4100daa4f2f"
+    },
+    {
+      "path": "decorations/1-vermilion.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_VERMILION.png",
+      "sha256": "d5da321b65328f2448e2fa01eb4d20bda4f7e02aeac42ffe8c426aa366dda98a"
+    },
+    {
+      "path": "decorations/1-white.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_WHITE.png",
+      "sha256": "7c6f60ca2d3c8de7aac38edca71004a90520316696b1091ade77fc2be04d97ad"
+    },
+    {
+      "path": "decorations/1-yellow.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/1_I_YELLOW.png",
+      "sha256": "d3a8d4659f6472f6d4c1ca78a58afb3a335e8baef35b762cc9bcae5f9c4e09c7"
+    },
+    {
+      "path": "decorations/2-blue.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_BLUE.png",
+      "sha256": "640802cdbec1a8c1944db1e24818aa8ca6cb5201cf15ebb9b0b321bcc65889cf"
+    },
+    {
+      "path": "decorations/2-brown.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_BROWN.png",
+      "sha256": "4a099835119b0d45eeb3a93c8c9ef103d3de27918825d73506305d270ab4b18d"
+    },
+    {
+      "path": "decorations/2-emerald.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_EMERALD.png",
+      "sha256": "200183b1a789cb0403a02b1dfecb2a926b66a1a78606ee2967586eb5d500cf97"
+    },
+    {
+      "path": "decorations/2-gray.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_GRAY.png",
+      "sha256": "c78c50e716fe9fd1b5ba0199dcdcbf88489ab99e3fba16a26d2c7c16823937ba"
+    },
+    {
+      "path": "decorations/2-ivory.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_IVORY.png",
+      "sha256": "c0b533906caa334f29a1e1371a25a483d148391e43941112a9a0a37f5eb76427"
+    },
+    {
+      "path": "decorations/2-lemon.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_LEMON.png",
+      "sha256": "42a7968ceadcd144ff24344c3f27f5a97a498a3bf88dc7a9c2e591dd690983b7"
+    },
+    {
+      "path": "decorations/2-pink.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_PINK.png",
+      "sha256": "dc0c01b321ed538400d178f39d37a90c95614d9cfcab57ce4d338490abf9868c"
+    },
+    {
+      "path": "decorations/2-purple.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_PURPLE.png",
+      "sha256": "8294c7a656336860ffd78873edcda585af7443ac54671367ac62bfc50c7526a0"
+    },
+    {
+      "path": "decorations/2-red.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_RED.png",
+      "sha256": "742cededa5d071a7f73567b973c16aa85ae2f7b7adec0826fd63ae07ad7eadb9"
+    },
+    {
+      "path": "decorations/2-rose.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_ROSE.png",
+      "sha256": "41eaa97dcce56d8511c75f136e8c6b72aceed866156e8c611f3defe273972b08"
+    },
+    {
+      "path": "decorations/2-sky.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_SKY.png",
+      "sha256": "8b24a4dc32cb16891714735badc62b9b69c3a26eee6ab898cda29a620d06ffac"
+    },
+    {
+      "path": "decorations/2-ultramarine.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_ULTRAMARINE.png",
+      "sha256": "aa63737957103f07b18f705f29fa28eff41ffc032c803a99744cd54d1372230f"
+    },
+    {
+      "path": "decorations/2-vermilion.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_VERMILION.png",
+      "sha256": "2e538f48bb7ce583ab132fce01e37964ff3ec49757e57cc744717cffa87a31a6"
+    },
+    {
+      "path": "decorations/2-white.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_WHITE.png",
+      "sha256": "c6d8a8c99cb50e09fe034a6da4ff2ade9499d195f5c8081f78fe6dd18ab1a95e"
+    },
+    {
+      "path": "decorations/2-yellow.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/2_I_YELLOW.png",
+      "sha256": "abc00dc83c289f2aacee677d866947359fff6acae933d1c65577b66ad80d9630"
+    },
+    {
+      "path": "decorations/3-blue.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_BLUE.png",
+      "sha256": "c5282ad58f44e581ac8803c722cdec002929cdebfc72c00054fbabefa1cbc2b7"
+    },
+    {
+      "path": "decorations/3-brown.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_BROWN.png",
+      "sha256": "779f9a3ff635e2740ae4836691cf3ca6ffef155e3494aeab70e8a939448055b0"
+    },
+    {
+      "path": "decorations/3-dark-purple.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_DPURPLE.png",
+      "sha256": "e6c2affe6d052184ac498403e2825b562f7eec1fe6153502bcd2607e1eb43eb2"
+    },
+    {
+      "path": "decorations/3-emerald.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_EMERALD.png",
+      "sha256": "c9e0317fefa55f1946d9c3d2c45f741fcfad561155b268717686bb652a8bb2a8"
+    },
+    {
+      "path": "decorations/3-gray.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_GRAY.png",
+      "sha256": "f37bbbcb4c59acb1433dd107ce85d49495978eab1e42adb13a2e6b1eda355165"
+    },
+    {
+      "path": "decorations/3-lemon.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_LEMON.png",
+      "sha256": "0e4fdfd6c910ebacc8d81d360da8353f8c8d0df5c47714cd525d67199da2095a"
+    },
+    {
+      "path": "decorations/3-moss-green.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_MOS.png",
+      "sha256": "cfd0b0fb33dfe99071507f263c5d14b5cda38c23622bff05640c9056d535fb14"
+    },
+    {
+      "path": "decorations/3-pink.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_PINK.png",
+      "sha256": "a4e4a19d293cbb82173fa03867523a8fc5adbf6d801696432053f4f0140c50f5"
+    },
+    {
+      "path": "decorations/3-purple.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_PURPLE.png",
+      "sha256": "c07ca45e5a51d1607e6cecb49b611506f3363417be53227aa301556cb35e51f7"
+    },
+    {
+      "path": "decorations/3-red.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_RED.png",
+      "sha256": "df2794183d264f01e8c6eff6106cadecac10c87cfc0a2d500e3b5e87e16e36ba"
+    },
+    {
+      "path": "decorations/3-rose.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_ROSE.png",
+      "sha256": "2f1f9b7c910407323cddadabad9dab395573a37a878fa7125b8fe43530cd84be"
+    },
+    {
+      "path": "decorations/3-sky.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_SKY.png",
+      "sha256": "350a1f179902b7a6eb03cbbcc816f59292b17955c09049f2d9a47175a916b7c0"
+    },
+    {
+      "path": "decorations/3-ultramarine.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_ULTRAMARINE.png",
+      "sha256": "34126b0de728e7b0a17054e6db233ee8b595cb4fdd6375da0801760a2e542b94"
+    },
+    {
+      "path": "decorations/3-vermilion.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_VERMILION.png",
+      "sha256": "b6695e3dbe99efecc0e0831846f1b26091113b5c88a419e012a4dac3cfb44716"
+    },
+    {
+      "path": "decorations/3-white.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_WHITE.png",
+      "sha256": "a23ea26297aeec0abadcfb2b318e4e2febfc7ff2e36a943170388437917db985"
+    },
+    {
+      "path": "decorations/3-yellow.png",
+      "url": "https://www.phantombrawlers.com/static/MHWilds/Decoration%20Icons/3_I_YELLOW.png",
+      "sha256": "7dccc0b1b0811548e650bc22580e950313361f3e935bcdbb8649853ec9eb4de9"
+    },
+    {
+      "path": "equipment/arms-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_01.svg",
+      "sha256": "ede1f9fa04075859f54ec5d2bd8e3a3e88e5c23ae47ea2ea7fb77a717f0f82be"
+    },
+    {
+      "path": "equipment/arms-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_02.svg",
+      "sha256": "b33ea87a5d13696a081680e52ca88ae78d49e2a4cfc41911fc6fcbd7b4c303ca"
+    },
+    {
+      "path": "equipment/arms-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_03.svg",
+      "sha256": "1c1b98eaa6b72da1edab8c3ddc33ca8cea3807095c85ae1b239d4901cc51728f"
+    },
+    {
+      "path": "equipment/arms-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_04.svg",
+      "sha256": "9b18a26000b2027ef3ea049692b4567ca1f9bab7a600d71a4c16fd9d2312ec3f"
+    },
+    {
+      "path": "equipment/arms-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_05.svg",
+      "sha256": "a608930a875639aba8dd542e4f3c364c91863e46dc8af51fe552fc61a2dd88e1"
+    },
+    {
+      "path": "equipment/arms-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_06.svg",
+      "sha256": "00ebf9076e1993ad3233825166514f98af5393e0d967b7732547ca94472b6500"
+    },
+    {
+      "path": "equipment/arms-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_07.svg",
+      "sha256": "1ddadc01ed96c436174ea42a7a888c3bfb5818e0fbff80274fba4597bba52589"
+    },
+    {
+      "path": "equipment/arms-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Arms/Arms_Rank_08.svg",
+      "sha256": "79496535a42e472c6522805ef28ce6b61057f4dbcf0ffd3fd467b25108749840"
+    },
+    {
+      "path": "equipment/bow-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_01.svg",
+      "sha256": "1609f9915eb7c38671268e17e059f24bf87fcef0e74e0d487345081943fed13d"
+    },
+    {
+      "path": "equipment/bow-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_02.svg",
+      "sha256": "84d63ca3aacd56cdea4eeea668e8730e6c2bf13c547db5e81a3afa800b7c2980"
+    },
+    {
+      "path": "equipment/bow-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_03.svg",
+      "sha256": "560fce6aa7048751787d7cb8eb7195b9fef1d671aa99860647239d83d6ce8cde"
+    },
+    {
+      "path": "equipment/bow-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_04.svg",
+      "sha256": "61a9675268d3b39ecf2da3cc951a7206d22c3403cfaa94a50aea4b4ed25dde77"
+    },
+    {
+      "path": "equipment/bow-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_05.svg",
+      "sha256": "7f478541f19936170d7e6d0bd2fe7f7b3013e3455b191d744f83973bdc994111"
+    },
+    {
+      "path": "equipment/bow-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_06.svg",
+      "sha256": "bd741a99dc0cb9797275450cb7a0b44cc6f3d7b8e3bc33b3294cec92402b7f0c"
+    },
+    {
+      "path": "equipment/bow-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_07.svg",
+      "sha256": "813ad81ad83c17f58239de616debc84e049a63d368409e6f60ca289df8833130"
+    },
+    {
+      "path": "equipment/bow-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Bow/Bow_Rank_08.svg",
+      "sha256": "263f0c042528f68a84777745635bbbf88f929607e6a6c8df890cadcebbfec682"
+    },
+    {
+      "path": "equipment/charge-blade-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_01.svg",
+      "sha256": "916f4e50b8a24a8f7d28f9cdd5f757c2e61d3f3ca3d079fefa7db2ac68bd76d0"
+    },
+    {
+      "path": "equipment/charge-blade-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_02.svg",
+      "sha256": "e3dbe1245024a06011a90ad846ffd1d227a902e9817759dc25de98a3e55d8977"
+    },
+    {
+      "path": "equipment/charge-blade-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_03.svg",
+      "sha256": "d2854c45a102efe9aac7bde9d88810d92317228cdfa63526fc6fd4b92cb0abaa"
+    },
+    {
+      "path": "equipment/charge-blade-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_04.svg",
+      "sha256": "bc36f108f40c0890869b690003e6465703d9b4e5ed0bb2b7d9c8ca1e5c8e6083"
+    },
+    {
+      "path": "equipment/charge-blade-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_05.svg",
+      "sha256": "927d7c2755161f0ae7cc16f3841cab4eb340fa522f90d7af4be0f167046b4850"
+    },
+    {
+      "path": "equipment/charge-blade-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_06.svg",
+      "sha256": "cb325ac113e18dfb2753346be022ace1ac9e813a35e0f3d19900af0ff91e9c7d"
+    },
+    {
+      "path": "equipment/charge-blade-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_07.svg",
+      "sha256": "e771bee0f29335e80995158ed1bb5f8b4b5b077b2ef8454ba132b2dd7d9c5ffb"
+    },
+    {
+      "path": "equipment/charge-blade-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Charge_Blade/Charge_Blade_rank_08.svg",
+      "sha256": "4b0959bb2aed86077e9d0c2a920a8b5f402dede37f5a6cfab659cf669b39893f"
+    },
+    {
+      "path": "equipment/charm-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_01.svg",
+      "sha256": "ed3fdf1a410d79a9a70a11d9e22f7a8e6be9db78e5d6ef0ddb47dd99f8260992"
+    },
+    {
+      "path": "equipment/charm-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_02.svg",
+      "sha256": "1fd81a37a089d9de3c177609703ff8a5f9d8eb7a3daf42227085d42231fbe8db"
+    },
+    {
+      "path": "equipment/charm-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_03.svg",
+      "sha256": "1fcb11029cb65912e1cb20402cbd205891a16f51e33ae355473945d951c0c590"
+    },
+    {
+      "path": "equipment/charm-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_04.svg",
+      "sha256": "20ad634a0171458a096272607ef1d776ee95802cf23cb355f3dbccc04260472a"
+    },
+    {
+      "path": "equipment/charm-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_05.svg",
+      "sha256": "6081723d3d7001abd4f99ba477dced7b85137acc47093ccdb75f09e8252c47a3"
+    },
+    {
+      "path": "equipment/charm-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_06.svg",
+      "sha256": "053fadc5b5a5274ae35e11ede650728d3763374f6e2eaf26f9ea4e2aaffceac5"
+    },
+    {
+      "path": "equipment/charm-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_07.svg",
+      "sha256": "ec2ff7a9c37c0bfbf65119bfd27d856e5acf1673c8626ad3149bc3598da0c179"
+    },
+    {
+      "path": "equipment/charm-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Charm/Charm_Rank_08.svg",
+      "sha256": "5d0df19851d7c64b40758264fc0cf07d638fe2d95747ab0e49c5f4887f3366fa"
+    },
+    {
+      "path": "equipment/chest-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_01.svg",
+      "sha256": "acc99155c63d7e611afdd6e24392d2ad76417055390aad4cfc4b83cb944db9a3"
+    },
+    {
+      "path": "equipment/chest-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_02.svg",
+      "sha256": "03d8f3dffe4cf6e869e8682a96996b15e2cc86edd727749a436eae87823c98e2"
+    },
+    {
+      "path": "equipment/chest-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_03.svg",
+      "sha256": "a702885dec8ef939926cd5e9444d51157a8d1d852a2ce19f832f7e2214db5aa3"
+    },
+    {
+      "path": "equipment/chest-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_04.svg",
+      "sha256": "f8fbef594aec5b3f6763aac443048d19447f1d1b6d9419efac8494807eedde5a"
+    },
+    {
+      "path": "equipment/chest-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_05.svg",
+      "sha256": "8598a2f6adff3803df31579fff2aeffdbd3d2c3f9167b5f6e728797d19e6c0f6"
+    },
+    {
+      "path": "equipment/chest-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_06.svg",
+      "sha256": "226aa3cf5285235e41073141413aaeda2ea3c7d385a1e66e5f86e3c4fbf01dc8"
+    },
+    {
+      "path": "equipment/chest-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_07.svg",
+      "sha256": "c9ef1d041bdb598feaeca5dc985169ee5fc5a6ff37772595846ebcbdcc4446c9"
+    },
+    {
+      "path": "equipment/chest-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Chest/Chest_Rank_08.svg",
+      "sha256": "5aeb0a38112b164168b6cb49bf6f3a8d5ef0ae55e0297d7c957159d269b34952"
+    },
+    {
+      "path": "equipment/dual-blades-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_01.svg",
+      "sha256": "9d7398636757a931a47dae211c9672b72c96dfcb28574197771493250935cb59"
+    },
+    {
+      "path": "equipment/dual-blades-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_02.svg",
+      "sha256": "b505dd9c7871ee46a00c522744e3d65d8aacbf731e8b3355717409d39092e6f2"
+    },
+    {
+      "path": "equipment/dual-blades-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_03.svg",
+      "sha256": "1c10e9db0365f0e66534aabe9d9c542db70c335c839bed36b0c6cdc038bce328"
+    },
+    {
+      "path": "equipment/dual-blades-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_04.svg",
+      "sha256": "144cef7ccc7c44a4eb692d32957ee270a4d71afedd04ae7c4a1e3deaf2ea0e99"
+    },
+    {
+      "path": "equipment/dual-blades-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_05.svg",
+      "sha256": "be301428d9d6a078a01a1d7490d365f2fea909d9cf96807dce9194dd8a7ce705"
+    },
+    {
+      "path": "equipment/dual-blades-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_06.svg",
+      "sha256": "9f2bae3a00d798dba31579d70e2e023355d88bd7b2ab66b31d70125867c79f5c"
+    },
+    {
+      "path": "equipment/dual-blades-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_07.svg",
+      "sha256": "f0d38b9c955e86c1c0ae37ed3a232832f714977bb823b6bb64cf08ea8af25c02"
+    },
+    {
+      "path": "equipment/dual-blades-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Dual_Blades/Dual_Blades_Rank_08.svg",
+      "sha256": "a9cc6b57c3c6ed00a8d947493038ecab47da11447e8a809160090e72ef1e4ebf"
+    },
+    {
+      "path": "equipment/great-sword-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_01.svg",
+      "sha256": "5487dbd4cb68e2c1b84cc2094e74913b48afbcd59c5611d491b88d955988c724"
+    },
+    {
+      "path": "equipment/great-sword-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_02.svg",
+      "sha256": "7207f9ee33f3b9c7548390e34ad50405259943507fa449a5b287409384801329"
+    },
+    {
+      "path": "equipment/great-sword-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_03.svg",
+      "sha256": "d91c7136369f50fb4fb4a8d901047cde78b98edeb1e5cd7521cbd38693cf5cb2"
+    },
+    {
+      "path": "equipment/great-sword-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_04.svg",
+      "sha256": "146cd11771c40524da25ec2a699e561119994d2776b8e50180078c9ece70cec0"
+    },
+    {
+      "path": "equipment/great-sword-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_05.svg",
+      "sha256": "babbbda2ddf91a98eddf53bf39cd4e5fd32aaebceae6f6638bb6bfaef7a9150d"
+    },
+    {
+      "path": "equipment/great-sword-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_06.svg",
+      "sha256": "8ef77196854493b4528f093747972d1fa6efd0fb2bbd975bb8f546873616f41d"
+    },
+    {
+      "path": "equipment/great-sword-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_07.svg",
+      "sha256": "9d8d13e07aea21b5286e6b048e5dd393742b1a1db095e9658c6a36ba380f4771"
+    },
+    {
+      "path": "equipment/great-sword-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Great_Sword/Great_Sword_Rank_08.svg",
+      "sha256": "abcf4b817da1d14486637f9112bf863740a1d762759c380ad5221221e1256fe3"
+    },
+    {
+      "path": "equipment/gunlance-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_01.svg",
+      "sha256": "22694dd2c710b0ed364e990333c368530207e7f2f2940e8b3927c51e9ae8925e"
+    },
+    {
+      "path": "equipment/gunlance-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_02.svg",
+      "sha256": "e46a882342fba86fa235c4d8ebe0f697a75c0c5aee3de11bf8e7ff6a7b534e60"
+    },
+    {
+      "path": "equipment/gunlance-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_03.svg",
+      "sha256": "75d3d2e0835d6da1a9b9b11ec0ef7b072f3f2d655f36bd12a8699a92251a79fc"
+    },
+    {
+      "path": "equipment/gunlance-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_04.svg",
+      "sha256": "c4daa7c3a025a5a7c802598236e1dec183871338b1430ab323041ed7705ab1dd"
+    },
+    {
+      "path": "equipment/gunlance-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_05.svg",
+      "sha256": "d54eaffc9b0db426b3aa16bffcef8075a9360f2981b66a7b7244e702c073c2d5"
+    },
+    {
+      "path": "equipment/gunlance-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_06.svg",
+      "sha256": "cd80e7c7c9b73da72b00f336b1a3fe7d8d114fb4fbc2a4bd077b7d2248058067"
+    },
+    {
+      "path": "equipment/gunlance-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_07.svg",
+      "sha256": "9dd066cf53058a908c28a2ecc358ba014514ec26d3b1d5342083a9f41138abe2"
+    },
+    {
+      "path": "equipment/gunlance-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Gunlance/Gunlance_Rank_08.svg",
+      "sha256": "51e6f3133e88cd80c0dd414690939aa6a7a3c743d44711a3728247bf4ec706a5"
+    },
+    {
+      "path": "equipment/hammer-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_01.svg",
+      "sha256": "fac2139b13a3925eec5c57b27b782461990828ec90e9af66b8ac41c424e70535"
+    },
+    {
+      "path": "equipment/hammer-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_02.svg",
+      "sha256": "dcd8f15865c90d03d6cfff883b3065a002a9c46d729604ae5ce9dffb917c2c0e"
+    },
+    {
+      "path": "equipment/hammer-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_03.svg",
+      "sha256": "4dc2105d5da426f006e9c13d92e6b891618b9ea4d21024dc735fec9ee849f744"
+    },
+    {
+      "path": "equipment/hammer-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_04.svg",
+      "sha256": "fed14e6e12ffbe2be2f5bd8352b15a84a82492081d24c6db9abfe580f1e507da"
+    },
+    {
+      "path": "equipment/hammer-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_05.svg",
+      "sha256": "71c98f0a5bf171d08c234c12cb53096a652f49305a63ee952ae62d749c9eb54f"
+    },
+    {
+      "path": "equipment/hammer-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_06.svg",
+      "sha256": "1871fc0df8f8f54b9b286e4dc2cca5d128c9e6dc9ede9d73ac0f96e33a3f9c41"
+    },
+    {
+      "path": "equipment/hammer-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_07.svg",
+      "sha256": "5956752c87f78f42f81d679b96dc2e37c17b9ced81db328e774cc1c857dfe109"
+    },
+    {
+      "path": "equipment/hammer-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hammer/Hammer_Rank_08.svg",
+      "sha256": "46c55adddbae111da826661baa04eb4bb6211bc4e11881e2049aa9cb1e403980"
+    },
+    {
+      "path": "equipment/head-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_01.svg",
+      "sha256": "a6665238f496006cde505cedfda8574185ac5f04485b3465215b64059fde216f"
+    },
+    {
+      "path": "equipment/head-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_02.svg",
+      "sha256": "2b85713d1c8e7d7cffd9583e7c09abf036d4492e6bdb821024edddfa0e74c4dd"
+    },
+    {
+      "path": "equipment/head-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_03.svg",
+      "sha256": "91fba2f3b27ecb735223424037ca318cf451222786a153f804ed095b5c8bd4f1"
+    },
+    {
+      "path": "equipment/head-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_04.svg",
+      "sha256": "8c2e33f398f5aeed7f99c5def1c626969cf7ee8249d5b021a5d8e90ed680adb1"
+    },
+    {
+      "path": "equipment/head-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_05.svg",
+      "sha256": "636af681ca1dfe4591829626f08d33a5c1530d9146781e6dea39efd50b58dbe2"
+    },
+    {
+      "path": "equipment/head-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_06.svg",
+      "sha256": "f7706abacabeb00a9d873a699f9bbcd31d350b7a3f0c1cf625087536bee4c90c"
+    },
+    {
+      "path": "equipment/head-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_07.svg",
+      "sha256": "1ab32ca110c5927aba5772fb3258277d4ece3420ddfefc56d121f32c74de8ee3"
+    },
+    {
+      "path": "equipment/head-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Helm/Helm_Rank_08.svg",
+      "sha256": "c81408da6af41df444e6025e5a6c0fb9d3474a5ca3d5fe7939218e353df7cba5"
+    },
+    {
+      "path": "equipment/heavy-bowgun-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_01.svg",
+      "sha256": "dfa3412705e5fb2e7a13105814c5409101ece65afd3c51ab65dd04517e206dcc"
+    },
+    {
+      "path": "equipment/heavy-bowgun-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_02.svg",
+      "sha256": "58f9c1ba11e2e562261d04758245894ddf9d1b0b7107f22dc5148d370b2cafeb"
+    },
+    {
+      "path": "equipment/heavy-bowgun-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_03.svg",
+      "sha256": "877da509902ae4756f74343aebcc3aacfc37e88de7c2f0a9c135b30128fb3f21"
+    },
+    {
+      "path": "equipment/heavy-bowgun-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_04.svg",
+      "sha256": "7cc8bf073386b1073539fdb6ada06eb0866f1bfe894ae6a84bd1dd357c97b093"
+    },
+    {
+      "path": "equipment/heavy-bowgun-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_05.svg",
+      "sha256": "f3ae838355d0a759e4594d508f13a1e05462329857f32296ff7118caef8e4f7d"
+    },
+    {
+      "path": "equipment/heavy-bowgun-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_06.svg",
+      "sha256": "f8f9727ebd98927c7921eac61cc42bad195df52af45d6c3897b4716cfaa70682"
+    },
+    {
+      "path": "equipment/heavy-bowgun-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_07.svg",
+      "sha256": "44fa8017b6b5861a121040df59f0b1f83303ba3accce9c63c8862ed61d5509a9"
+    },
+    {
+      "path": "equipment/heavy-bowgun-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Heavy_Bowgun/Heavy_Bowgun_Rank_08.svg",
+      "sha256": "62c67e2892ec82ed05cb3a4cdcf1acf5c12d3deeea4a6ab5720c56ddfeb78edd"
+    },
+    {
+      "path": "equipment/hunting-horn-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_01.svg",
+      "sha256": "9b9fab2b6db8e27fa58ce58deefb1d3e52d39da17cc87791318274b6ce3bd51d"
+    },
+    {
+      "path": "equipment/hunting-horn-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_02.svg",
+      "sha256": "b31f13eb3e411375605c8819d9720feaaa6f5adb5131d0b1480d3cc98cca6df6"
+    },
+    {
+      "path": "equipment/hunting-horn-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_03.svg",
+      "sha256": "5958fccce235e14c8781c73e14fcbd5f8ef4aac3765350ef478a7209008b39ae"
+    },
+    {
+      "path": "equipment/hunting-horn-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_04.svg",
+      "sha256": "db974eab1e48497f64489dd101960bcca53a2954e8bad20d8b732fabe6e0dbf6"
+    },
+    {
+      "path": "equipment/hunting-horn-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_05.svg",
+      "sha256": "238e7aa30b9706c7d5b4e1e37d32276f79845bb6c08193c7843e5e6ad3074913"
+    },
+    {
+      "path": "equipment/hunting-horn-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_06.svg",
+      "sha256": "521ea7a926ba845ccd25b6a1c1b560ccb92645038f759e774f5ef64a0bda5e08"
+    },
+    {
+      "path": "equipment/hunting-horn-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_07.svg",
+      "sha256": "d889063ba75205c2f2ef5428a7854f9ac1c4cc862db1d1b2fd4fa76c22cbbfbc"
+    },
+    {
+      "path": "equipment/hunting-horn-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Hunting_Horn/Hunting_Horn_Rank_08.svg",
+      "sha256": "ab40c7b7b91d95c84e6e8f480f4773434743b2f6217c86177d51b18e0077e554"
+    },
+    {
+      "path": "equipment/insect-glaive-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_01.svg",
+      "sha256": "b1989a4c2cfb43c1907258672b7350987905ec9c604d581f81a3640047093513"
+    },
+    {
+      "path": "equipment/insect-glaive-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_02.svg",
+      "sha256": "c446a0783d7671de496aa33a8d83bf307319fbcbb8aff06c3f73fda4a1bd40a7"
+    },
+    {
+      "path": "equipment/insect-glaive-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_03.svg",
+      "sha256": "98007178446bc4382ddd6ec8989fab3e39ff33b4009f88d4d6bf02e9950ba0cb"
+    },
+    {
+      "path": "equipment/insect-glaive-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_04.svg",
+      "sha256": "a9b3caea115468fe6bd81113a7b55f4dd4d95c8cf65c55a68c354d8c374ed74e"
+    },
+    {
+      "path": "equipment/insect-glaive-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_05.svg",
+      "sha256": "19e2d6bd899b4bf75a54cb5a3706e550684836e8f0a0d4cec5db01cc643b35da"
+    },
+    {
+      "path": "equipment/insect-glaive-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_06.svg",
+      "sha256": "2ad3f92f94cff4bb4d191c1a55132d17bbeb73803ed0fd9aab86ae8c6f6875dc"
+    },
+    {
+      "path": "equipment/insect-glaive-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_07.svg",
+      "sha256": "590141aa649c304e811b1be078ad53c6c94d84e2eabbbe5653362b252dc95a28"
+    },
+    {
+      "path": "equipment/insect-glaive-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Insect_Glaive/Insect_Glaive_Rank_08.svg",
+      "sha256": "6b5e60a2b8179e4b7f5f3b2c9a6909c694c02dcead1a91de0c1c0686104e4155"
+    },
+    {
+      "path": "equipment/lance-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_01.svg",
+      "sha256": "2e382bb482a4b9bdee2ce7561a8055203f56dbe977d5a3b5c6e3155299abc140"
+    },
+    {
+      "path": "equipment/lance-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_02.svg",
+      "sha256": "c15a62af48ccfdbdb77df53b8cdebdbb52a59cdfa7b1e3cfab4b1869fe4224f5"
+    },
+    {
+      "path": "equipment/lance-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_03.svg",
+      "sha256": "129c1bf64d8f744fc645df9ac649c78ce347303a43329a5320f0db1a25d011d1"
+    },
+    {
+      "path": "equipment/lance-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_04.svg",
+      "sha256": "8deaceb6a79dd52140769f56950c38ba6fb52efc4ba6a3a98ddef3e844ddc0b1"
+    },
+    {
+      "path": "equipment/lance-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_05.svg",
+      "sha256": "5930b3a83c1a9f00e34ab4a8f5e786fd4cc3897bb16b308b255cbb9306eccabc"
+    },
+    {
+      "path": "equipment/lance-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_06.svg",
+      "sha256": "6a646910658cf94b85f830d7fd1fb053031c39c44e5717fb1f013b030497bd56"
+    },
+    {
+      "path": "equipment/lance-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_07.svg",
+      "sha256": "7c160baa5fa5fb3d468f337b1d9e8a2fd122ab91b71583ad8345c44079d59adf"
+    },
+    {
+      "path": "equipment/lance-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Lance/Lance_Rank_08.svg",
+      "sha256": "77406143f1cfbb6f846d5e50509b78ec79a46b00f11d8496ec53be70b61f8729"
+    },
+    {
+      "path": "equipment/legs-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_01.svg",
+      "sha256": "3575b5d86bbfcb61d2cae702c6709ca5a4d421fb714010ad73dbd98ff06a2419"
+    },
+    {
+      "path": "equipment/legs-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_02.svg",
+      "sha256": "352e3a56d7887738a255818a8e6507426a9b948ba2414e56e2dd406e50255597"
+    },
+    {
+      "path": "equipment/legs-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_03.svg",
+      "sha256": "7b5ab9a3041279bda421d1e411bf05155027adb890862cf74e09417d14cfdfb2"
+    },
+    {
+      "path": "equipment/legs-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_04.svg",
+      "sha256": "0752f8546657cb1658dcc3d2a27121c498dd0a08e3dcd6c1b4a784559662c64b"
+    },
+    {
+      "path": "equipment/legs-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_05.svg",
+      "sha256": "b6a2d33b728f46b8ecac5edc274eec9879f6fc3fa2ee0bd898de2044f5167492"
+    },
+    {
+      "path": "equipment/legs-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_06.svg",
+      "sha256": "3b55d87f8d7c002266cd0bc522c3af84b5036baff0cc8495e13514a327ee1bbd"
+    },
+    {
+      "path": "equipment/legs-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_07.svg",
+      "sha256": "8275960e6f98478e890a6fcb6cbcb7704d73773453a11a289259a807d24a4bcd"
+    },
+    {
+      "path": "equipment/legs-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Legs/Legs_Rank_08.svg",
+      "sha256": "b2b60723ee0d73646f82afb9b093a480286a64486743e3a922050175f2adc02f"
+    },
+    {
+      "path": "equipment/light-bowgun-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_01.svg",
+      "sha256": "31a511dbeae35bcfb1bab26ffae3771c5b7ac23a6b6c03e1cfa9f585e327e66c"
+    },
+    {
+      "path": "equipment/light-bowgun-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_02.svg",
+      "sha256": "02928b9c1cbe929d9eee183f316d955cf8768d645f54910ab5b56db5e9b97a8f"
+    },
+    {
+      "path": "equipment/light-bowgun-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_03.svg",
+      "sha256": "4eee8cb225419cca1ac5912c33e40c43ddccc506150cb961794ce64a8d85ca24"
+    },
+    {
+      "path": "equipment/light-bowgun-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_04.svg",
+      "sha256": "2508cb7c0c4361869430d1e565d83883ac282f47ad1c529efcab9ffcc2d05636"
+    },
+    {
+      "path": "equipment/light-bowgun-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_05.svg",
+      "sha256": "4451b8a01c9e9f6ef3f0342d8d72888bd22557609ed0ab89b60cb45928341999"
+    },
+    {
+      "path": "equipment/light-bowgun-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_06.svg",
+      "sha256": "f296c2c5df7f421bb68e194352eca2155c7fbc491d8679124eb3535b217d9947"
+    },
+    {
+      "path": "equipment/light-bowgun-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_07.svg",
+      "sha256": "e82eda67cce7788b3d9e52f89a53e4e711af93bb1b4d080675675e08e7f2f1b3"
+    },
+    {
+      "path": "equipment/light-bowgun-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Light_Bowgun/Light_Bowgun_Rank_08.svg",
+      "sha256": "7157445487879c4f146a27783e2722d5fb1eab704e2bc5d9b592c2c52efdec63"
+    },
+    {
+      "path": "equipment/long-sword-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_01.svg",
+      "sha256": "ec7889aabd81a1e4be2dd1e4f5f90112d695e671ab7a5e766f82a0ca5ce9110c"
+    },
+    {
+      "path": "equipment/long-sword-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_02.svg",
+      "sha256": "f274e57b90476db6cb633151725112ab65344c72139eb65d25bd381ff8039a56"
+    },
+    {
+      "path": "equipment/long-sword-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_03.svg",
+      "sha256": "858b7eb9f1ed672eb5d6bcf71150829a723cf95a8a23c0743db3e4d92303a374"
+    },
+    {
+      "path": "equipment/long-sword-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_04.svg",
+      "sha256": "bf1c9835b8c3683bd7c26766aea39346f26753c335e62ae75e73f3449049c2e8"
+    },
+    {
+      "path": "equipment/long-sword-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_05.svg",
+      "sha256": "c3664e4f3f3b6f7e090c13883126edce09b22411754b8a4ad8046085b21b5b0f"
+    },
+    {
+      "path": "equipment/long-sword-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_06.svg",
+      "sha256": "679bfc1c466dd5411223bbf14123f28d0a9d5828c468a7c3b71ad9ba3ebcdd5f"
+    },
+    {
+      "path": "equipment/long-sword-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_07.svg",
+      "sha256": "ab7a9b4fed3cd9f342519b29a7bc8b636c9615e401f0e8535c3ec718337b08e5"
+    },
+    {
+      "path": "equipment/long-sword-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Long_Sword/Long_Sword_Rank_08.svg",
+      "sha256": "03668148e9d36416a2ee814de56a935c11884bf17e2eeffcd1949a0fa3e688fd"
+    },
+    {
+      "path": "equipment/switch-axe-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_01.svg",
+      "sha256": "e898136db3bdcc334c876b59f1f9db0aa78cf3711bcae9e2b21d3a600ec4e079"
+    },
+    {
+      "path": "equipment/switch-axe-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_02.svg",
+      "sha256": "118dc29d5bd90592ea1b84097ca7ff5dfa8b2de5e532eed7e44c89bee6bc3143"
+    },
+    {
+      "path": "equipment/switch-axe-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_03.svg",
+      "sha256": "dafb5a56f13a61acf7559600c2e8e6727d5d9f86ac9f50cec7e8922377f6116d"
+    },
+    {
+      "path": "equipment/switch-axe-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_04.svg",
+      "sha256": "62d33690b1c9f7da730eb4105dc75e9789268fe09c9b1ddd7f455b2d40ce348e"
+    },
+    {
+      "path": "equipment/switch-axe-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_05.svg",
+      "sha256": "ab0ff275cb7333450210b726d9021d52ef297eebd4901a3aa553ba4dff6314fa"
+    },
+    {
+      "path": "equipment/switch-axe-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_06.svg",
+      "sha256": "72882cfddb02c287528aef39825ad860b34ce2bcd93d3dbd940cf183ab37e40e"
+    },
+    {
+      "path": "equipment/switch-axe-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_07.svg",
+      "sha256": "5e610a8d71329dd180451d7c1f6aa2bb515b6bcb33e76272d5c619b823b89795"
+    },
+    {
+      "path": "equipment/switch-axe-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Switch_Axe/Switch_Axe_Rank_08.svg",
+      "sha256": "e86c61dc647454151c08a180944dfe2e4b9861e85f4ee159fb9dd8e374f925e4"
+    },
+    {
+      "path": "equipment/sword-shield-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_01.svg",
+      "sha256": "4e94664c0e2b78157bcaaf7728693bd639353ecb110dc2431e018c4389ff3af6"
+    },
+    {
+      "path": "equipment/sword-shield-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_02.svg",
+      "sha256": "28647a3167032673484de8d1942d23a51032c42e09827e64b1ebaa8bc099e511"
+    },
+    {
+      "path": "equipment/sword-shield-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_03.svg",
+      "sha256": "472635ea0a58521b607a1b5140003082627827a1c8d879fa6f92c7eeb49256d7"
+    },
+    {
+      "path": "equipment/sword-shield-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_04.svg",
+      "sha256": "901dc056321c9fe458afdb042debe4a1568d05cb5632173ecba4cff66d63e6c8"
+    },
+    {
+      "path": "equipment/sword-shield-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_05.svg",
+      "sha256": "e69047cafe366714860c6c3ffd2e5eee0d1763a3337d27abf4a55a21cf3964bb"
+    },
+    {
+      "path": "equipment/sword-shield-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_06.svg",
+      "sha256": "09f0b7ff8664b6eb5a5999ffe3c2d4c548ec9ef98c796acd28da259f186bd935"
+    },
+    {
+      "path": "equipment/sword-shield-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_07.svg",
+      "sha256": "6ff19b695b0835a3513b7d32606932c308392256e011594b29976f40dce0ed50"
+    },
+    {
+      "path": "equipment/sword-shield-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Weapons/Sword_%26_Shield/Sword_%26_Shield_Rank_08.svg",
+      "sha256": "6a1782c03a142e90dfa8f2c41fa18985d0ad86e6263cf144f11ebfccb6fb23f1"
+    },
+    {
+      "path": "equipment/waist-1.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_01.svg",
+      "sha256": "5eae5c47771b2f9fa532b9fc87f851efafb68cbc7c4716f0feb8e738b3c32d24"
+    },
+    {
+      "path": "equipment/waist-2.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_02.svg",
+      "sha256": "ccf80512e43aef28054860b819a3565808c19874b02be9f0e6d1a00438f3855c"
+    },
+    {
+      "path": "equipment/waist-3.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_03.svg",
+      "sha256": "0503578721959d5fac7e258fb45fa39a00a4c9b98e855a204c2494130893c82d"
+    },
+    {
+      "path": "equipment/waist-4.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_04.svg",
+      "sha256": "5d497b28ea9870b5192edeb2b537660d15d6431e17ae61af410dd3afb4006aeb"
+    },
+    {
+      "path": "equipment/waist-5.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_05.svg",
+      "sha256": "69cec0cd61389ba35c1896e694244e26fe93a3bb44a605450c7243d85d478051"
+    },
+    {
+      "path": "equipment/waist-6.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_06.svg",
+      "sha256": "a023ff3e39df00d2d579132ebbe5dd42269a02f9d2b423334fd2454f62d63144"
+    },
+    {
+      "path": "equipment/waist-7.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_07.svg",
+      "sha256": "2744680fe707ed1ceffaf5412ca893d750fb096ef7f64a5b3e9bfd27d1aac757"
+    },
+    {
+      "path": "equipment/waist-8.svg",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/SVG/Hunter/Torso/Torso_Rank_08.svg",
+      "sha256": "6104f81e5bb0f5975928907c346804293ff4a343f6a69d05c684e70e941c2371"
+    },
+    {
+      "path": "LICENSE-MIT.txt",
+      "url": "https://raw.githubusercontent.com/OthelloRhin/MHW_Icons_SVG/242f7e883a6851e496ad01531ca499059230c57e/LICENSE",
+      "sha256": "a32224b9cd085b9f08be37a4f039ca39fd827d3a12414df0d01ccb729ff12f44"
+    }
+  ]
+}
