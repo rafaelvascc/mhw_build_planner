@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState, type SVGProps } from 'react';
-import { Swords, Plus, Shield, Gem, ChevronRight, ChevronDown, X, Search, SlidersHorizontal, Flame, Droplets, Zap, Snowflake, Orbit, Skull, Bomb, Sparkles, CircleHelp, Check, RotateCcw, Copy } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type SVGProps } from 'react';
+import { Swords, Plus, Shield, Gem, ChevronRight, ChevronDown, X, Search, SlidersHorizontal, Flame, Droplets, Zap, Snowflake, Orbit, Skull, Bomb, Sparkles, CircleHelp, Check, RotateCcw, Copy, ArrowUp, ArrowDown, LoaderCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { SkillDescriptions, SkillName } from '@/components/skill-name';
 import { EquipmentIcon, DecorationIcon, DecorationSlotIcon, rarityStyle } from '@/components/equipment-icon';
 import { slots, labels, weaponTypes, elements, emptyFilters, filterEquipment, compatible, equip, decorate, summarize, type EquipmentSlot, type BuildSlot, type Build, type Catalog, type Equipment, type Filters, type SkillRef, type DecoSlot } from '@/lib/planner';
 import { decodeBuild, encodeBuild } from '@/lib/build-url';
+import { optimizeBuild, applyOptimizedBuild, OptimizerError, optimizerLimitations, type OptimizerResult, type OptimizerProgress } from '@/lib/optimizer';
 
 
 function DragonHeadIcon({size=24, strokeWidth=1.8, ...props}: SVGProps<SVGSVGElement> & {size?:number|string}) {
@@ -78,6 +79,13 @@ export default function Home() {
   const [customSlots,setCustomSlots] = useState<DecoSlot[]>([]);
   const [announcement,setAnnouncement] = useState('');
   const [urlReady,setUrlReady] = useState(false);
+  const [optimizerOpen,setOptimizerOpen] = useState(false);
+  const [optimizerSkills,setOptimizerSkills] = useState<string[]>([]);
+  const [optimizing,setOptimizing] = useState(false);
+  const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
+  const [optimizerResult,setOptimizerResult] = useState<OptimizerResult|null>(null);
+  const [optimizerError,setOptimizerError] = useState('');
+  const optimizerAbort = useRef<AbortController|null>(null);
 
   useEffect(()=>{
     const controller = new AbortController();
@@ -114,6 +122,8 @@ export default function Home() {
   const decoResults = useMemo(()=>!targetSlot?[]:catalog?.decorations.filter(d=>compatible(d,targetSlot)&&`${d.name} ${d.skills.map(s=>skillById.get(s.id)?.name).join(' ')}`.toLowerCase().includes(decoSearch.toLowerCase())).sort((a,b)=>b.level-a.level||a.name.localeCompare(b.name))??[],[catalog,targetSlot,decoSearch,skillById]);
   const skillText = (skills:SkillRef[]) => skills.map((s,i)=><span key={s.id}>{i>0&&' · '}<SkillName id={s.id} level={s.level}/></span>);
   const weaponSpecials = build.weapon?.equipment.specials??[];
+  const ordinarySkillNames = useMemo(()=>ordinarySkills.map(s=>s.name).sort(),[ordinarySkills]);
+  const optimizedSummary = useMemo(()=>optimizerResult?summarize(optimizerResult.build,catalog?.skills??[],defenseMode):null,[optimizerResult,catalog,defenseMode]);
 
   function openPicker(slot:BuildSlot,index?:number) {
     setFilters({...emptyFilters});setDecoSearch('');setVisible(60);setPicker({slot,index});
@@ -131,6 +141,37 @@ export default function Home() {
     const updated={...charm,skills:valid,slots:customSlots.filter(s=>s.level>0)};
     setBuild(b=>equip(b,updated));setCustomOpen(false);setAnnouncement('Custom charm updated.');
   }
+  function stopOptimizer() {
+    optimizerAbort.current?.abort();optimizerAbort.current=null;setOptimizing(false);setOptimizerProgress(null);
+  }
+  function openOptimizer() {setOptimizerResult(null);setOptimizerError('');setOptimizerOpen(true);}
+  function closeOptimizer() {stopOptimizer();setOptimizerResult(null);setOptimizerOpen(false);}
+  function moveOptimizerSkill(index:number,offset:number) {
+    setOptimizerSkills(list=>{const target=index+offset;if(target<0||target>=list.length)return list;const next=[...list];[next[index],next[target]]=[next[target],next[index]];return next;});
+  }
+  async function runOptimizer() {
+    if(!catalog)return;
+    const skillIds=optimizerSkills.map(name=>catalog.skills.find(s=>s.name===name)?.id).filter((id):id is number=>id!=null);
+    stopOptimizer();
+    const controller=new AbortController();optimizerAbort.current=controller;
+    setOptimizing(true);setOptimizerResult(null);setOptimizerError('');setOptimizerProgress(null);
+    try {
+      const result=await optimizeBuild({build,catalog,skillIds,defenseMode},{signal:controller.signal,onProgress:setOptimizerProgress});
+      if(controller.signal.aborted)return;
+      setOptimizerResult(result);setAnnouncement(result.allCapped?'Optimization finished. All selected skills reached their maximum.':`Optimization finished. ${result.message}`);
+    } catch(e) {
+      if(e instanceof OptimizerError&&e.code==='aborted')return;
+      setOptimizerError(e instanceof Error?e.message:'The optimizer could not complete.');
+    } finally {
+      if(optimizerAbort.current===controller){optimizerAbort.current=null;setOptimizing(false);setOptimizerProgress(null);}
+    }
+  }
+  function applyOptimizer() {
+    if(!optimizerResult)return;
+    const result=optimizerResult;
+    setBuild(b=>applyOptimizedBuild(b,result));setOptimizerResult(null);setOptimizerOpen(false);setAnnouncement('Optimized build applied. Both weapons were kept.');
+  }
+  useEffect(()=>()=>{optimizerAbort.current?.abort();},[]);
   async function copyBuildLink() {
     try { await navigator.clipboard.writeText(window.location.href);setAnnouncement('Build link copied.'); }
     catch { setAnnouncement('Copy failed. Copy the URL from your browser address bar.'); }
@@ -147,7 +188,7 @@ export default function Home() {
   return <SkillDescriptions skills={catalog?.skills??[]}><div className="app-shell">
     <header className="topbar"><div className="brand"><Swords/><span>HUNTER<span className="brand-light">FORGE</span></span><span className="edition">WILDS</span></div><span className="header-note">Monster Hunter Wilds · Build planner</span></header>
     <main>
-      <div className="page-title"><div><p className="eyebrow">THE HUNTER’S WORKBENCH</p><h1>Build your next hunt.</h1><p className="muted">Choose your equipment. Find your edge.</p></div><div className="page-actions"><button className="copy-build-button" type="button" onClick={copyBuildLink} disabled={!catalog}><Copy size={14}/> Copy build link</button><span className={`outline-badge ${summary.equippedCount===8?'complete':''}`}>{summary.equippedCount===8&&<Check size={14}/>} {summary.equippedCount} / 8 equipped</span></div></div>
+      <div className="page-title"><div><p className="eyebrow">THE HUNTER’S WORKBENCH</p><h1>Build your next hunt.</h1><p className="muted">Choose your equipment. Find your edge.</p></div><div className="page-actions"><button className="copy-build-button optimize-button" type="button" onClick={openOptimizer} disabled={!catalog}><Sparkles size={14}/> Optimize</button><button className="copy-build-button" type="button" onClick={copyBuildLink} disabled={!catalog}><Copy size={14}/> Copy build link</button><span className={`outline-badge ${summary.equippedCount===8?'complete':''}`}>{summary.equippedCount===8&&<Check size={14}/>} {summary.equippedCount} / 8 equipped</span></div></div>
       {error&&<div className="error-banner" role="alert">{error}<button onClick={()=>setReload(n=>n+1)}>Try again</button></div>}
       <div className="sr-only" role="status">{announcement}</div>
       <div className="workbench">
@@ -191,7 +232,6 @@ export default function Home() {
       </div>
       <footer><span>{catalog?`${catalog.equipments.length.toLocaleString()} equipment entries · ${catalog.decorations.length} decorations · Data: ${catalog.version.slice(0,10)}`:'Loading equipment catalog…'}</span><a href="/icons/credits.html" target="_blank" rel="noreferrer">Icon sources & colors ↗</a><a href="https://wilds.mhdb.io" target="_blank" rel="noreferrer">Data by MHDB ↗</a></footer>
     </main>
-undefined
     <Dialog open={!!picker} onOpenChange={open=>{if(!open)setPicker(null);}}><DialogContent className="equipment-dialog">
       <div className="picker-heading"><p className="eyebrow">EQUIPMENT CATALOG</p><DialogTitle className="picker-title">{targetSlot?'Choose a decoration':`Choose ${picker?labels[picker.slot].toLowerCase():'equipment'}`}</DialogTitle><DialogDescription>{targetSlot?`Only ${targetSlot.kind} decorations that fit a level ${targetSlot.level} slot are shown.`:'Find the right piece for your build.'}</DialogDescription></div>
       {targetSlot?<><div className="search-field"><Search size={18}/><Input aria-label="Search decorations" placeholder="Search decorations by name or skill…" value={decoSearch} onChange={e=>setDecoSearch(e.target.value)}/></div><button className="clear-decoration" onClick={()=>{if(picker?.index!=null)setBuild(b=>decorate(b,picker.slot,picker.index!,null));setPicker(null);}}><X size={15}/> Leave this slot empty</button><div className="results-header"><span>{decoResults.length} compatible decorations</span><span>LEVEL {targetSlot.level} · {targetSlot.kind.toUpperCase()}</span></div><div className="results-list">{decoResults.map(d=><div className="catalog-item" key={d.id}><button className="catalog-select" aria-label={`Equip ${d.name}`} onClick={()=>{if(picker?.index!=null)setBuild(b=>decorate(b,picker.slot,picker.index!,d));setAnnouncement(`${d.name} added.`);setPicker(null);}}/><div className={`equipment-icon ${d.kind==='weapon'?'weapon-icon':''}`}><DecorationIcon decoration={d}/></div><div className="result-copy"><div className="result-title"><strong>{d.name}</strong><span className="rarity" style={rarityStyle(d.rarity)}>R{d.rarity}</span></div><p>{skillText(d.skills)}</p><small className="decoration-kind">{d.kind==='weapon'?'Weapon':'Armor'} decoration · Level {d.level}</small></div><DecorationSlotIcon level={d.level} kind={d.kind}/><ChevronRight size={16}/></div>)}{!decoResults.length&&<div className="empty-state"><Search/><p>No decorations match</p><button className="text-button" onClick={()=>setDecoSearch('')}>Clear search</button></div>}</div></>:
@@ -200,6 +240,30 @@ undefined
     </DialogContent></Dialog>
 
     <Dialog open={customOpen} onOpenChange={setCustomOpen}><DialogContent className="custom-dialog"><DialogTitle>Configure your charm</DialogTitle><DialogDescription>Enter the skills and slots on your charm. Custom rolls are not checked for in-game obtainability.</DialogDescription><div className="custom-skills">{[0,1,2].map(i=>{const ref=customSkills[i];const skill=skillById.get(ref?.id??-1);return <div key={i} className="custom-row"><SkillSearch strict label={`Charm skill ${i+1}`} names={ordinarySkills.filter(s=>!customSkills.some((r,j)=>j!==i&&r.id===s.id)).map(s=>s.name).sort()} value={skill?.name??''} onChange={name=>{const found=ordinarySkills.find(s=>s.name===name);setCustomSkills(rows=>{const next=[...rows];next[i]={id:found?.id??-1,level:found?1:0};return next;});}}/><Choice label={`Skill ${i+1} level`} value={String(ref?.level||1)} options={(skill?.ranks??[{level:1}]).map(r=>[String(r.level),`Lv. ${r.level}`])} onChange={v=>setCustomSkills(rows=>rows.map((r,j)=>i===j?{...r,level:+v}:r))}/></div>;})}</div><h3>Decoration slots</h3>{[0,1,2].map(i=><div className="custom-row" key={i}><Choice label={`Charm slot ${i+1}`} value={String(customSlots[i]?.level??0)} onChange={v=>setCustomSlots(rows=>{const next=[...rows];next[i]={kind:next[i]?.kind??'armor',level:+v};return next;})} options={[[ '0','No slot'],['1','Level 1'],['2','Level 2'],['3','Level 3']]}/><Choice label={`Slot ${i+1} type`} value={customSlots[i]?.kind??'armor'} options={[[ 'armor','Armor'],['weapon','Weapon']]} onChange={v=>setCustomSlots(rows=>{const next=[...rows];next[i]={level:next[i]?.level??0,kind:v as 'armor'|'weapon'};return next;})}/></div>)}<button className="primary-button" onClick={saveCharm}>Apply charm</button></DialogContent></Dialog>
+    <Dialog open={optimizerOpen} onOpenChange={open=>{if(!open)closeOptimizer();}}><DialogContent className="custom-dialog optimizer-dialog"><DialogTitle>Optimize your build</DialogTitle><DialogDescription>Pick the skills you want. Their order is their priority: the first skill is maximized before the second, and so on. Both equipped weapons stay fixed while armor, charm and decorations are searched.</DialogDescription>
+      {!optimizerResult?<>
+        <div className="optimizer-context" aria-label="Fixed equipment">
+          <span><b>Primary weapon</b> {build.weapon?.equipment.name??'None equipped'}</span>
+          <span><b>Secondary weapon</b> {build.secondaryWeapon?.equipment.name??'None equipped'}</span>
+          <span><b>Charm candidates</b> {build.charm?.equipment.random?`All forged charms plus your custom ${build.charm.equipment.name}`:'All forged charms'}</span>
+        </div>
+        <div className="optimizer-picker"><SkillMultiSelect value={optimizerSkills} onChange={setOptimizerSkills} names={ordinarySkillNames}/></div>
+        {optimizerSkills.length?<ol className="optimizer-priority" aria-label="Skill priority">{optimizerSkills.map((name,i)=><li key={name}><span className="priority-index">{i+1}</span><SkillName name={name} passive/><span className="priority-actions"><button type="button" aria-label={`Move ${name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerSkill(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${name} down`} disabled={i===optimizerSkills.length-1||optimizing} onClick={()=>moveOptimizerSkill(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${name}`} disabled={optimizing} onClick={()=>setOptimizerSkills(list=>list.filter(item=>item!==name))}><X size={14}/></button></span></li>)}</ol>:<p className="muted optimizer-hint">Select at least one skill. The first selected skill has the highest priority.</p>}
+        <p className="inline-note">{optimizerLimitations[0]}</p>
+        {optimizerError&&<p className="optimizer-error" role="alert">{optimizerError}</p>}
+        {optimizing&&<div className="optimizer-progress" role="status"><LoaderCircle size={15} className="spin"/><span>{optimizerProgress?.slot?`Searching ${labels[optimizerProgress.slot].toLowerCase()}…`:optimizerProgress?.stage==='fill'?'Placing decorations…':'Preparing candidates…'} {(optimizerProgress?.evaluated??0).toLocaleString()} combinations</span><span className="progress-bar"><i style={{width:`${Math.round(100*(optimizerProgress?.done??0)/(optimizerProgress?.total??1))}%`}}/></span></div>}
+        <div className="optimizer-actions"><button className="primary-button" type="button" disabled={!optimizerSkills.length||optimizing||!catalog} onClick={runOptimizer}>{optimizing?'Optimizing…':'Run optimizer'}</button>{optimizing?<button className="secondary-button" type="button" onClick={stopOptimizer}>Stop</button>:<button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button>}</div>
+      </>:<>
+        {optimizerResult.message?<p className="optimizer-warning" role="status">{optimizerResult.message}</p>:<p className="optimizer-success" role="status"><Check size={14}/> Every selected skill reached its maximum level.</p>}
+        {optimizerResult.approximate&&<p className="inline-note">The search was bounded to stay fast. This is the best build found, not a proven optimum.</p>}
+        <table className="optimizer-skills"><thead><tr><th>#</th><th>Skill</th><th>Level</th><th>Max</th><th>Capped</th></tr></thead><tbody>{optimizerResult.skills.map(s=><tr key={s.skill.id} className={s.capped?'capped':'partial'}><td>{s.priority}</td><td><SkillName id={s.skill.id} passive/></td><td>{s.level}</td><td>{s.max}</td><td><span className="capped-cell">{s.capped?<><Check size={14}/> Yes</>:'No'}</span></td></tr>)}</tbody></table>
+        <h3>Optimized equipment</h3>
+        <ul className="optimizer-pieces">{optimizerResult.pieces.map(p=><li key={p.slot}><div className={`equipment-icon ${p.fixed?'weapon-icon':''}`}><EquipmentIcon slot={p.slot} kind={p.equipment.kind} rarity={p.equipment.rarity} size={28}/></div><div><div className="slot-label">{labels[p.slot]}{p.fixed?<span className="rarity">KEPT</span>:<span className="rarity" style={rarityStyle(p.equipment.rarity)}>RARITY {p.equipment.rarity}</span>}</div><strong>{p.equipment.name}</strong><p>{p.equipment.skills.length?skillText(p.equipment.skills):'No innate skills'}</p>{p.equipment.slots.length>0&&<div className="optimizer-decos">{p.equipment.slots.map((slot,j)=>{const d=p.decorations[j];return <span key={j} className={`deco-chip ${d?'filled':''} ${slot.kind}`}>{d?<DecorationIcon decoration={d} size={20}/>:<DecorationSlotIcon level={slot.level} kind={slot.kind} size={20}/>}{d?d.name:`Empty Lv. ${slot.level}`}</span>;})}</div>}</div></li>)}</ul>
+        {optimizedSummary&&<p className="optimizer-meta">Defense {optimizedSummary.defense} · Decorations {optimizedSummary.usedSlots} / {optimizedSummary.totalSlots} · {optimizerResult.evaluated.toLocaleString()} combinations evaluated · Candidates: {Object.entries(optimizerResult.candidates).map(([slot,count])=>`${labels[slot as BuildSlot]} ${count}`).join(', ')}</p>}
+        <p className="inline-note">{optimizerResult.unsupported[0]}</p>
+        <div className="optimizer-actions"><button className="primary-button" type="button" onClick={applyOptimizer}>Apply optimized build</button><button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button></div>
+      </>}
+    </DialogContent></Dialog>
   </div></SkillDescriptions>;
 }
 

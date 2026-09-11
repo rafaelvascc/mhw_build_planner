@@ -1,4 +1,4 @@
-import { compatible, slots, type Build, type BuildSlot, type Catalog, type DecoSlot, type SkillRef } from './planner';
+import { compatible, slots, type Build, type BuildSlot, type Catalog, type DecoSlot, type SkillRef } from './planner.ts';
 
 const FORMAT_VERSION = 1;
 const MAX_PAYLOAD_LENGTH = 12_000;
