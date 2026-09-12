@@ -288,6 +288,22 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   const encode=keyEncoder(bonusSpecs.map(b=>b.needed),maxes,totalSlots);
   const compareRaw=(a:State,b:State)=>compareScore(a,b)||sum(b.bonus)-sum(a.bonus)||poolValue(b.pool)-poolValue(a.pool)||sum(b.pool)-sum(a.pool);
   const compareEstimates=(a:State,b:State)=>compareScore(a.estimate!,b.estimate!)||compareRaw(a,b);
+  /** Bonus pieces the slots after `slotIndex` can still add, per selected bonus. */
+  const supplyAfter=slotLists.map((_,slotIndex)=>bonusSpecs.map((spec,i)=>Math.min(spec.needed,slotLists.slice(slotIndex+1).reduce((n,l)=>n+Math.max(0,...l.options.map(o=>o.bonus[i])),0))));
+  /** Beam order for intermediate stages: a bonus level still reachable later outranks everything, then the fewest
+   *  pieces still missing for it, then the usual score. Keeps partial sets alive until the last slot can complete them. */
+  const compareBeam=(slotIndex:number)=>{
+    const supply=supplyAfter[slotIndex];
+    const potential=(state:State)=>bonusSpecs.map((spec,i)=>bonusLevel(spec.ranks,Math.min(spec.needed,state.bonus[i]+supply[i]),spec.target));
+    const deficit=(state:State,reach:number[])=>bonusSpecs.map((spec,i)=>reach[i]>state.rank[i]?spec.needed-state.bonus[i]:0);
+    return (a:State,b:State)=>{
+      const ra=potential(a),rb=potential(b);
+      for(let i=0;i<ra.length;i++){ if(ra[i]!==rb[i]) return rb[i]-ra[i]; }
+      const da=deficit(a,ra),db=deficit(b,rb);
+      for(let i=0;i<da.length;i++){ if(da[i]!==db[i]) return da[i]-db[i]; }
+      return compareEstimates(a,b);
+    };
+  };
   const stateDominates=(a:State,b:State)=>countsDominate(a.bonus,b.bonus)&&dominates(a,b)&&poolDominates(a.pool,b.pool);
   const estimateAll=async(list:State[])=>{ let n=0; for(const state of list){ state.estimate??=estimateOf(state); if((++n&2047)===0) await maybeYield(); } };
 
@@ -308,12 +324,13 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
       if((evaluated&2047)===0) await maybeYield();
     }
     let next=[...merged.values()];
-    await estimateAll(next); next.sort(compareEstimates);
+    await estimateAll(next); next.sort(bonusSpecs.length?compareBeam(slotIndex):compareEstimates);
     if(next.length>beamWidth){ next=next.slice(0,beamWidth); approximate=true; }
     states=paretoPrune(next,stateDominates);
     report('search',slotIndex+1,states.length,merged.size,slot);
   }
   checkAbort();
+  states.sort(compareEstimates);
   report('fill',optimizerSlots.length,states.length,states.length);
   let best:{state:State;fill:Fill;score:Scored}|null=null;
   for(const state of states.slice(0,finalists)){

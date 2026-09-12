@@ -231,6 +231,16 @@ test('real catalog set bonuses reach the requested level and report missing weap
   await assert.rejects(run({},data,[],[{id:skillId('Constitution'),level:1}]),(error:unknown)=>error instanceof OptimizerError&&error.code==='unknown-bonus');
 });
 
+test('a narrow beam keeps partial sets alive until the last slot can complete them',async()=>{
+  const catalog=syntheticCatalog();
+  const sword=find_(catalog,'Test Sword');
+  for(const beamWidth of [1,2,8]){
+    const result=await optimizeBuild({build:equip({},sword),catalog,skillIds:[1,2],bonuses:[{id:5,level:2}]},{yieldControl:async()=>{},beamWidth});
+    assert.equal(result.bonuses[0].level,2,`beam ${beamWidth}`);assert.equal(result.bonuses[0].pieces,4);
+    assert.equal(result.build.weapon?.equipment.name,'Sigma Sword');
+  }
+});
+
 test('an aborted signal stops the search with an aborted error',async()=>{
   const controller=new AbortController();controller.abort();
   await assert.rejects(optimizeBuild({build:{},catalog:data,skillIds:[skillId('Constitution')]},{signal:controller.signal}),(error:unknown)=>error instanceof OptimizerError&&error.code==='aborted');
