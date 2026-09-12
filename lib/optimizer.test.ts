@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { compatible, equip, decorate, summarize } from './planner.ts';
 import type { Build, Catalog, Decoration, Equipment, Skill } from './planner.ts';
-import { optimizeBuild, applyOptimizedBuild, slotCandidates, OptimizerError, optimizerLimitations, type OptimizerResult } from './optimizer.ts';
+import { optimizeBuild, applyOptimizedBuild, slotCandidates, bonusWeapons, OptimizerError, type BonusTarget, type OptimizerResult } from './optimizer.ts';
 
 const data:Catalog=JSON.parse(readFileSync(new URL('../public/data/catalog.json',import.meta.url),'utf8'));
 const find=(name:string)=>{const e=data.equipments.find(e=>e.name===name);assert.ok(e,name);return e;};
 const skillId=(name:string)=>{const s=data.skills.find(s=>s.name===name);assert.ok(s,name);return s.id;};
-const run=(build:Build,catalog:Catalog,skillIds:number[])=>optimizeBuild({build,catalog,skillIds},{yieldControl:async()=>{}});
+const run=(build:Build,catalog:Catalog,skillIds:number[],bonuses:BonusTarget[]=[])=>optimizeBuild({build,catalog,skillIds,bonuses},{yieldControl:async()=>{}});
 
 /** Small deterministic catalog for priority, capping and compatibility rules. */
 function syntheticCatalog():Catalog {
@@ -18,6 +18,8 @@ function syntheticCatalog():Catalog {
     {id:2,name:'Beta',kind:'armor',description:null,ranks:ranks(3)},
     {id:3,name:'Gamma',kind:'armor',description:null,ranks:ranks(1)},
     {id:4,name:'Omega',kind:'weapon',description:null,ranks:ranks(2)},
+    {id:5,name:"Sigma's Will",kind:'set',description:null,ranks:[{level:1,name:'Sigma I',description:'',pieces:2},{level:2,name:'Sigma II',description:'',pieces:4}]},
+    {id:6,name:"Tau's Favor",kind:'group',description:null,ranks:[{level:1,name:'Tau',description:'',pieces:3}]},
   ];
   const decorations:Decoration[]=[
     {id:1,name:'Alpha Jewel [1]',kind:'armor',level:1,rarity:3,skills:[{id:1,level:1}]},
@@ -42,6 +44,13 @@ function syntheticCatalog():Catalog {
     piece('ch-a','charm','Alpha Charm',[{id:1,level:1}],[],0,{kind:'charm',defense:undefined}),
     piece('ch-b','charm','Beta Charm',[{id:2,level:2}],[],0,{kind:'charm',defense:undefined}),
     piece('ch-r','charm','Mystery Charm',[],[],0,{kind:'charm',defense:undefined,random:true}),
+    piece('h-sig','head','Sigma Helm',[],[],8,{bonuses:[5]}),
+    piece('c-sig','chest','Sigma Mail',[],[],8,{bonuses:[5,6]}),
+    piece('a-sig','arms','Sigma Braces',[],[],4,{bonuses:[5]}),
+    piece('a-tau','arms','Tau Braces',[],[],4,{bonuses:[6]}),
+    piece('wa-tau','waist','Tau Coil',[],[],4,{bonuses:[6]}),
+    piece('w-sig','weapon','Sigma Sword',[],[{kind:'weapon',level:1}],0,{kind:'great-sword',damage:{raw:90,display:430},affinity:0,bonuses:[5]}),
+    piece('w-sigbow','weapon','Sigma Bow',[],[],0,{kind:'bow',damage:{raw:80,display:160},affinity:0,bonuses:[5]}),
   ];
   return {version:'test',equipments,decorations,skills};
 }
@@ -149,6 +158,79 @@ test('no selected skills is rejected with a clear error',async()=>{
   await assert.rejects(run({},data,[999999]),(error:unknown)=>error instanceof OptimizerError&&error.code==='unknown-skill');
 });
 
+test('set bonus targets honour the chosen level and outrank skills',async()=>{
+  const catalog=syntheticCatalog();
+  const skillsOnly=await run({},catalog,[1]);
+  assert.equal(level(skillsOnly,'Alpha'),3);
+  const levelOne=await run({},catalog,[1],[{id:5,level:1}]);
+  assert.deepEqual(levelOne.bonuses.map(b=>[b.skill.name,b.priority,b.target,b.level,b.pieces,b.reached]),[["Sigma's Will",1,1,1,2,true]]);
+  assert.equal(levelOne.allCapped,true);
+  assert.equal(level(levelOne,'Alpha'),3,'two Sigma pieces still leave room for Alpha 3');
+  assert.equal(Object.values(levelOne.build).filter(e=>e?.equipment.bonuses.includes(5)).length,2);
+  assert.equal(levelOne.build.weapon,undefined,'no weapon is invented for an empty slot');
+  const levelTwo=await run({},catalog,[1],[{id:5,level:2}]);
+  assert.equal(levelTwo.bonuses[0].level,1,'only three armor pieces exist without a weapon');
+  assert.equal(levelTwo.bonuses[0].reached,false);
+  assert.equal(levelTwo.bonuses[0].pieces,2,'a third piece would not raise the level, so skills win the tie');
+  assert.equal(level(levelTwo,'Alpha'),3);
+  assert.match(levelTwo.message??'',/Sigma's Will Lv 1\/2 \(2\/4 pieces\)/);
+  assert.equal(levelTwo.allCapped,false);
+  assert.match(levelTwo.notes[0],/No weapon is equipped/);
+});
+
+test('bonuses are ranked in selection order before skills',async()=>{
+  const catalog=syntheticCatalog();
+  const sigmaFirst=await run({},catalog,[],[{id:5,level:1},{id:6,level:1}]);
+  const tauFirst=await run({},catalog,[],[{id:6,level:1},{id:5,level:1}]);
+  assert.deepEqual(sigmaFirst.bonuses.map(b=>[b.skill.name,b.level]),[["Sigma's Will",1],["Tau's Favor",1]]);
+  assert.deepEqual(tauFirst.bonuses.map(b=>[b.skill.name,b.level]),[["Tau's Favor",1],["Sigma's Will",1]]);
+  assert.deepEqual(sigmaFirst.skills,[]);
+  assert.equal(sigmaFirst.build.chest?.equipment.name,'Sigma Mail','the shared piece counts once for each bonus');
+});
+
+test('weapons carrying a selected bonus are suggested only for the equipped weapon type',async()=>{
+  const catalog=syntheticCatalog();
+  const sword=find_(catalog,'Test Sword');
+  assert.deepEqual(bonusWeapons(equip({},sword),catalog,'weapon',[5]).map(e=>e.name),['Sigma Sword']);
+  assert.deepEqual(bonusWeapons({},catalog,'weapon',[5]),[],'empty weapon slots get no suggestions');
+  assert.deepEqual(bonusWeapons(equip({},sword),catalog,'weapon',[]),[]);
+  const needsWeapon=await run(equip({},sword),catalog,[1],[{id:5,level:2}]);
+  assert.equal(needsWeapon.build.weapon?.equipment.name,'Sigma Sword');
+  assert.equal(needsWeapon.build.secondaryWeapon,undefined);
+  assert.equal(needsWeapon.bonuses[0].level,2);assert.equal(needsWeapon.bonuses[0].pieces,4);
+  assert.equal(level(needsWeapon,'Alpha'),1,'the bonus outranks the skill even though it costs Alpha levels');
+  const weaponPiece=needsWeapon.pieces.find(p=>p.slot==='weapon')!;
+  assert.equal(weaponPiece.fixed,false);assert.equal(weaponPiece.suggested,true);
+  assert.match(needsWeapon.notes[0],/1 Great Sword weapon carrying a selected bonus was considered/);
+  const keepsWeapon=await run(equip({},sword),catalog,[],[{id:5,level:1}]);
+  assert.equal(keepsWeapon.build.weapon?.equipment.name,'Test Sword','the equipped weapon wins when the bonus does not need it');
+  assert.equal(keepsWeapon.pieces.find(p=>p.slot==='weapon')?.fixed,true);
+  const bow=find_(catalog,'Test Bow');
+  const bowBuild=await run(equip({},bow),catalog,[],[{id:5,level:2}]);
+  assert.equal(bowBuild.build.weapon?.equipment.name,'Sigma Bow','a bow is never replaced by a great sword');
+});
+
+test('applying a result with a suggested weapon replaces the primary weapon',async()=>{
+  const catalog=syntheticCatalog();
+  catalog.equipments=catalog.equipments.filter(e=>e.name!=='Sigma Bow');
+  const current=equip(equip({},find_(catalog,'Test Sword')),find_(catalog,'Test Bow'),'secondaryWeapon');
+  const result=await run(current,catalog,[],[{id:5,level:2}]);
+  const applied=applyOptimizedBuild(current,result);
+  assert.equal(applied.weapon?.equipment.name,'Sigma Sword');
+  assert.equal(applied.secondaryWeapon?.equipment.name,'Test Bow');
+});
+
+test('real catalog set bonuses reach the requested level and report missing weapon support',async()=>{
+  const rey=data.skills.find(s=>s.name==="Rey Dau's Voltage")!;
+  const result=await run(equip({},find('Hope Bow IV')),data,[skillId('Constitution')],[{id:rey.id,level:2}]);
+  assert.equal(result.bonuses[0].level,2);assert.ok(result.bonuses[0].pieces>=4);assert.equal(result.bonuses[0].reached,true);
+  assert.equal(summarize(result.build,data.skills).bonuses.find(b=>b.skill.id===rey.id)?.active?.level,2);
+  assert.equal(result.build.weapon?.equipment.name,'Hope Bow IV');
+  assert.match(result.notes[0],/No Bow in the catalog grants a selected bonus/);
+  await assert.rejects(run({},data,[],[{id:rey.id,level:9}]),(error:unknown)=>error instanceof OptimizerError&&error.code==='unknown-bonus');
+  await assert.rejects(run({},data,[],[{id:skillId('Constitution'),level:1}]),(error:unknown)=>error instanceof OptimizerError&&error.code==='unknown-bonus');
+});
+
 test('an aborted signal stops the search with an aborted error',async()=>{
   const controller=new AbortController();controller.abort();
   await assert.rejects(optimizeBuild({build:{},catalog:data,skillIds:[skillId('Constitution')]},{signal:controller.signal}),(error:unknown)=>error instanceof OptimizerError&&error.code==='aborted');
@@ -165,7 +247,7 @@ test('skills that cannot be maximized are reported without failing',async()=>{
   assert.equal(result.skills[1].capped,false,'Gamma only comes from helmets, which the higher-priority Alpha already uses');
   assert.match(result.message??'',/Gamma 0\/1/);
   assert.equal(result.build.head?.equipment.name,'Alpha Helm');
-  assert.deepEqual(result.unsupported,optimizerLimitations);
+  assert.deepEqual(result.bonuses,[]);
 });
 
 test('incomplete builds and partial catalogs do not break the search',async()=>{
