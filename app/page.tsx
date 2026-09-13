@@ -9,6 +9,7 @@ import { SkillDescriptions, SkillName } from '@/components/skill-name';
 import { EquipmentIcon, DecorationIcon, DecorationSlotIcon, rarityStyle } from '@/components/equipment-icon';
 import { slots, labels, weaponTypes, elements, emptyFilters, filterEquipment, compatible, equip, decorate, summarize, type EquipmentSlot, type BuildSlot, type Build, type Catalog, type Equipment, type Filters, type SkillRef, type DecoSlot } from '@/lib/planner';
 import { decodeBuild, encodeBuild } from '@/lib/build-url';
+import { useSessionState } from '@/hooks/use-session-state';
 import { optimizeBuild, applyOptimizedBuild, bonusRanks, bonusKinds, OptimizerError, type OptimizerResult, type OptimizerProgress } from '@/lib/optimizer';
 
 
@@ -38,7 +39,9 @@ function WeaponRowStats({weapon}:{weapon:Equipment}) {
   </div>;
 }
 type Picker = { slot:BuildSlot; index?:number } | null;
-const ignoredStorageKey = 'hunter-forge.optimizer.ignored';
+const sessionKeys = { skills:'hunter-forge.optimizer.skills', bonuses:'hunter-forge.optimizer.bonuses', ignored:'hunter-forge.optimizer.ignored' } as const;
+const parseStrings = (value:unknown) => Array.isArray(value)?value.filter((item):item is string=>typeof item==='string'):null;
+const parseBonuses = (value:unknown) => Array.isArray(value)?value.flatMap(item=>item&&typeof item==='object'&&typeof (item as {name?:unknown}).name==='string'&&Number.isInteger((item as {level?:unknown}).level)?[{name:(item as {name:string}).name,level:(item as {level:number}).level}]:[]):null;
 const isWeaponBuildSlot = (slot:BuildSlot) => slot==='weapon'||slot==='secondaryWeapon';
 
 function Choice({ label, value, onChange, options }: {label:string; value:string; onChange:(v:string)=>void; options:[string,string][]}) {
@@ -81,11 +84,9 @@ export default function Home() {
   const [announcement,setAnnouncement] = useState('');
   const [urlReady,setUrlReady] = useState(false);
   const [optimizerOpen,setOptimizerOpen] = useState(false);
-  const [optimizerSkills,setOptimizerSkills] = useState<string[]>([]);
-  const [optimizerBonuses,setOptimizerBonuses] = useState<{name:string;level:number}[]>([]);
-  const [ignoredIds,setIgnoredIds] = useState<string[]>(()=>{
-    try { const raw=typeof window==='undefined'?null:window.sessionStorage.getItem(ignoredStorageKey); const parsed:unknown=raw?JSON.parse(raw):[]; return Array.isArray(parsed)?parsed.filter((id):id is string=>typeof id==='string'):[]; } catch { return []; }
-  });
+  const [optimizerSkills,setOptimizerSkills] = useSessionState<string[]>(sessionKeys.skills,[],parseStrings);
+  const [optimizerBonuses,setOptimizerBonuses] = useSessionState<{name:string;level:number}[]>(sessionKeys.bonuses,[],parseBonuses);
+  const [ignoredIds,setIgnoredIds] = useSessionState<string[]>(sessionKeys.ignored,[],parseStrings);
   const [optimizing,setOptimizing] = useState(false);
   const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
   const [optimizerResult,setOptimizerResult] = useState<OptimizerResult|null>(null);
@@ -164,7 +165,6 @@ export default function Home() {
     setOptimizerBonuses(list=>names.map(name=>list.find(b=>b.name===name)??{name,level:bonusRanks(bonusByName.get(name)!).at(-1)?.level??1}));
   }
   function setBonusLevel(name:string,level:number) {setOptimizerBonuses(list=>list.map(b=>b.name===name?{...b,level}:b));}
-  useEffect(()=>{ try { window.sessionStorage.setItem(ignoredStorageKey,JSON.stringify(ignoredIds)); } catch {} },[ignoredIds]);
   /** Marks a suggested piece as not owned and re-runs the search without it. The list is kept for the browser tab session. */
   function ignoreEquipment(id:string) {
     const next=ignoredIds.includes(id)?ignoredIds:[...ignoredIds,id];
