@@ -241,6 +241,30 @@ test('a narrow beam keeps partial sets alive until the last slot can complete th
   }
 });
 
+test('excluded equipment is never chosen and the search continues with the next best pieces',async()=>{
+  const weapon=find('Hope Bow IV');
+  const ids=[skillId('Weakness Exploit'),skillId('Agitator')];
+  const first=await optimizeBuild({build:equip({},weapon),catalog:data,skillIds:ids},{yieldControl:async()=>{}});
+  const excluded=[first.build.head!.equipment.id,first.build.charm!.equipment.id];
+  const second=await optimizeBuild({build:equip({},weapon),catalog:data,skillIds:ids,excludeIds:excluded},{yieldControl:async()=>{}});
+  for(const entry of Object.values(second.build)) assert.ok(!excluded.includes(entry!.equipment.id),entry!.equipment.name);
+  assert.equal(second.build.weapon?.equipment.id,weapon.id);
+  assert.ok(second.build.head&&second.build.charm);
+  assert.ok(slotCandidates({},data,'head',[],excluded).every(e=>!excluded.includes(e.id)));
+  assert.equal(slotCandidates({},data,'head',[],excluded).length,data.equipments.filter(e=>e.slot==='head').length-1);
+  const catalog=syntheticCatalog();
+  const sword=find_(catalog,'Test Sword');
+  const noSigmaSword=await optimizeBuild({build:equip({},sword),catalog,skillIds:[],bonuses:[{id:5,level:2}],excludeIds:['w-sig']},{yieldControl:async()=>{}});
+  assert.equal(noSigmaSword.build.weapon?.equipment.name,'Test Sword','an ignored suggested weapon is no longer suggested');
+  assert.equal(noSigmaSword.bonuses[0].level,1,'without the weapon the 4-piece level is out of reach');assert.ok(noSigmaSword.bonuses[0].pieces<4);
+  const stillEquipped=await optimizeBuild({build:equip({},sword),catalog,skillIds:[1],excludeIds:['w-1']},{yieldControl:async()=>{}});
+  assert.equal(stillEquipped.build.weapon?.equipment.name,'Test Sword','the equipped weapon is never dropped');
+  const base=data.equipments.find(e=>e.slot==='charm'&&e.random)!;
+  const custom:Equipment={...base,skills:[{id:skillId('Weakness Exploit'),level:5}],slots:[]};
+  const noCustom=await optimizeBuild({build:equip({},custom),catalog:data,skillIds:[skillId('Weakness Exploit')],excludeIds:[base.id]},{yieldControl:async()=>{}});
+  assert.equal(noCustom.build.charm?.equipment.random,false,'an ignored custom charm falls back to forged charms');
+});
+
 test('an aborted signal stops the search with an aborted error',async()=>{
   const controller=new AbortController();controller.abort();
   await assert.rejects(optimizeBuild({build:{},catalog:data,skillIds:[skillId('Constitution')]},{signal:controller.signal}),(error:unknown)=>error instanceof OptimizerError&&error.code==='aborted');

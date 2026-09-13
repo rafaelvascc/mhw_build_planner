@@ -37,7 +37,7 @@ export const weaponSlots = ['weapon','secondaryWeapon'] as const satisfies reado
 export const bonusKinds = ['set','group'] as const;
 
 export interface BonusTarget { id:number; level:number }
-export interface OptimizerInput { build:Build; catalog:Catalog; skillIds:number[]; bonuses?:BonusTarget[]; defenseMode?:'base'|'max' }
+export interface OptimizerInput { build:Build; catalog:Catalog; skillIds:number[]; bonuses?:BonusTarget[]; defenseMode?:'base'|'max'; /** Equipment ids the player does not own; never chosen (equipped weapons are always kept). */ excludeIds?:Iterable<string> }
 export interface OptimizerProgress { stage:'prepare'|'search'|'fill'|'finish'; slot?:OptimizerSlot; done:number; total:number; evaluated:number; states:number; merged:number }
 export interface OptimizerOptions { beamWidth?:number; finalists?:number; fillBeamWidth?:number; signal?:AbortSignal; onProgress?:(progress:OptimizerProgress)=>void; yieldControl?:()=>Promise<void>; yieldEveryMs?:number }
 export interface OptimizedSkill { skill:Skill; priority:number; level:number; max:number; capped:boolean }
@@ -205,19 +205,20 @@ export function bonusWeapons(build:Build,catalog:Catalog,slot:'weapon'|'secondar
   return catalog.equipments.filter(e=>e.slot==='weapon'&&e.id!==current.id&&e.kind===current.kind&&e.bonuses.some(id=>ids.has(id)));
 }
 
-/** Equipment considered for a slot: the equipped weapon plus bonus-carrying weapons of its type, forged charms plus the configured custom charm, or catalog armor. */
-export function slotCandidates(build:Build,catalog:Catalog,slot:OptimizerSlot,bonusIds:Iterable<number>=[]):Equipment[] {
+/** Equipment considered for a slot: the equipped weapon plus bonus-carrying weapons of its type, forged charms plus the configured custom charm, or catalog armor. Excluded ids are dropped everywhere except the equipped weapons. */
+export function slotCandidates(build:Build,catalog:Catalog,slot:OptimizerSlot,bonusIds:Iterable<number>=[],excludeIds:Iterable<string>=[]):Equipment[] {
+  const excluded=new Set(excludeIds);
   if(slot==='weapon'||slot==='secondaryWeapon'){
     const current=build[slot]?.equipment;
-    const suggestions=bonusWeapons(build,catalog,slot,bonusIds);
+    const suggestions=bonusWeapons(build,catalog,slot,bonusIds).filter(e=>!excluded.has(e.id));
     return current?[current,...suggestions]:suggestions;
   }
   if(slot==='charm'){
-    const forged=catalog.equipments.filter(e=>e.slot==='charm'&&!e.random);
+    const forged=catalog.equipments.filter(e=>e.slot==='charm'&&!e.random&&!excluded.has(e.id));
     const current=build.charm?.equipment;
-    return current?.random?[current,...forged]:forged;
+    return current?.random&&!excluded.has(current.id)?[current,...forged]:forged;
   }
-  return catalog.equipments.filter(e=>e.slot===slot);
+  return catalog.equipments.filter(e=>e.slot===slot&&!excluded.has(e.id));
 }
 
 function keyEncoder(bonusNeeds:number[],maxes:number[],slotCount:number) {
@@ -275,12 +276,13 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   report('prepare',0,1,1);
   const bonusIds=targets.map(t=>t.id);
   const slotLists=optimizerSlots.map(slot=>{
-    const raw=slotCandidates(build,catalog,slot,bonusIds);
+    const raw=slotCandidates(build,catalog,slot,bonusIds,input.excludeIds??[]);
     const scored=raw.map(e=>candidateOf(ctx,e)).sort(compareCandidates);
     return {slot,considered:raw.length,options:raw.length>1?paretoPrune(scored,candidateDominates,Infinity):scored};
   });
   if(targets.length){
-    const weaponCount=weaponSlots.reduce((n,slot)=>n+bonusWeapons(build,catalog,slot,bonusIds).length,0);
+    const excluded=new Set(input.excludeIds??[]);
+    const weaponCount=weaponSlots.reduce((n,slot)=>n+bonusWeapons(build,catalog,slot,bonusIds).filter(e=>!excluded.has(e.id)).length,0);
     const kindNames=[...new Set(weaponSlots.map(slot=>build[slot]?.equipment.kind).filter((k):k is string=>!!k))].map(k=>weaponTypes[k]??k);
     notes.push(!kindNames.length?'No weapon is equipped, so no weapon was suggested for the selected bonuses.':weaponCount?`${weaponCount} ${kindNames.join(' / ')} weapon${weaponCount===1?'':'s'} carrying a selected bonus ${weaponCount===1?'was':'were'} considered as a replacement.`:`No ${kindNames.join(' or ')} in the catalog grants a selected bonus, so the equipped weapons stayed fixed.`);
   }
