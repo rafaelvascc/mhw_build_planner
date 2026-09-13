@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { compatible, equip, decorate, summarize, filterEquipment, emptyFilters } from './planner.ts';
+import { compatible, equip, decorate, summarize, filterEquipment, emptyFilters, searchSkills } from './planner.ts';
 import type { Catalog, Equipment, Build } from './planner.ts';
 const data:Catalog=JSON.parse(readFileSync(new URL('../public/data/catalog.json',import.meta.url),'utf8'));
 const find=(name:string)=>{const e=data.equipments.find(e=>e.name===name);assert.ok(e,name);return e;};
@@ -58,6 +58,23 @@ test('skill filters support multiple selected skills',()=>{
   assert.ok(pieces.length>0);
   assert.ok(pieces.every(e=>[...e.skills.map(s=>s.id),...e.bonuses].some(id=>ids.has(id))));
 });
+test('skill search matches descriptions after names, ignoring case and accents',()=>{
+  const stamina=searchSkills(data.skills,'stamina');
+  const names=stamina.map(m=>m.skill.name);
+  assert.deepEqual(names.slice(0,2),['Stamina Surge','Stamina Thief']);
+  assert.ok(stamina.slice(0,2).every(m=>m.byName));
+  assert.ok(names.includes('Constitution')&&names.includes('Marathon Runner'));
+  const constitution=stamina.find(m=>m.skill.name==='Constitution')!;
+  assert.equal(constitution.byName,false);assert.match(constitution.snippet??'',/stamina/i);
+  const affinity=searchSkills(data.skills,'AFFINITY').map(m=>m.skill.name);
+  assert.ok(affinity.includes('Critical Eye')&&affinity.includes('Weakness Exploit')&&!affinity.includes('Constitution'));
+  assert.equal(searchSkills(data.skills,'').length,data.skills.length);
+  assert.equal(searchSkills(data.skills,'  ')[0].skill.name,[...data.skills].sort((a,b)=>a.name.localeCompare(b.name))[0].name);
+  assert.equal(searchSkills(data.skills,'critical éye')[0]?.skill.name,'Critical Eye');
+  assert.equal(searchSkills(data.skills,'rey dau')[0]?.skill.name,"Rey Dau's Voltage");
+  assert.deepEqual(searchSkills(data.skills,'zzzz-no-such-skill'),[]);
+});
+
 test('skill levels cap and passive raw/affinity bonuses apply once',()=>{
   const attack=data.skills.find(s=>s.name==='Attack Boost')!,eye=data.skills.find(s=>s.name==='Critical Eye')!;
   const weapon:Equipment={...find('Hope Bow I'),skills:[{id:attack.id,level:9},{id:eye.id,level:5}]};

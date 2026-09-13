@@ -26,6 +26,20 @@ export function decorate(build:Build,slot:BuildSlot,index:number,decoration:Deco
 export interface Filters {name:string;skill:string;skills:string[];minRarity:string;maxRarity:string;minCount:string;maxCount:string;minLevel:string;maxLevel:string;type:string;elements:string[];rarity?:string;count?:string;level?:string}
 export const emptyFilters:Filters={name:'',skill:'',skills:[],minRarity:'any',maxRarity:'any',minCount:'any',maxCount:'any',minLevel:'any',maxLevel:'any',type:'any',elements:[]};
 const normalized=(s:string)=>s.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
+export interface SkillMatch { skill:Skill; byName:boolean; snippet?:string }
+/** Skills whose name contains the query first (alphabetical), then skills whose description, rank names or rank descriptions contain it. Accent- and case-insensitive. */
+export function searchSkills(skills:Skill[],query:string):SkillMatch[] {
+  const q=normalized(query.trim());
+  const sorted=[...skills].sort((a,b)=>a.name.localeCompare(b.name));
+  if(!q) return sorted.map(skill=>({skill,byName:true}));
+  const byName:SkillMatch[]=[],byText:SkillMatch[]=[];
+  for(const skill of sorted){
+    if(normalized(skill.name).includes(q)){ byName.push({skill,byName:true}); continue; }
+    const snippet=[skill.description??'',...skill.ranks.flatMap(r=>[r.name??'',r.description])].find(text=>normalized(text).includes(q));
+    if(snippet!=null) byText.push({skill,byName:false,snippet});
+  }
+  return [...byName,...byText];
+}
 export function filterEquipment(items:Equipment[],f:Filters,skills:Skill[]) {
   const names=new Map(skills.map(s=>[s.id,normalized(s.name)]));
   const minRarity=f.minRarity==='any'?(f.rarity&&f.rarity!=='any'?+f.rarity:1):+f.minRarity;
