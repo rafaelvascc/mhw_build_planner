@@ -38,6 +38,7 @@ function WeaponRowStats({weapon}:{weapon:Equipment}) {
   </div>;
 }
 type Picker = { slot:BuildSlot; index?:number } | null;
+const ignoredStorageKey = 'hunter-forge.optimizer.ignored';
 const isWeaponBuildSlot = (slot:BuildSlot) => slot==='weapon'||slot==='secondaryWeapon';
 
 function Choice({ label, value, onChange, options }: {label:string; value:string; onChange:(v:string)=>void; options:[string,string][]}) {
@@ -82,7 +83,9 @@ export default function Home() {
   const [optimizerOpen,setOptimizerOpen] = useState(false);
   const [optimizerSkills,setOptimizerSkills] = useState<string[]>([]);
   const [optimizerBonuses,setOptimizerBonuses] = useState<{name:string;level:number}[]>([]);
-  const [ignoredIds,setIgnoredIds] = useState<string[]>([]);
+  const [ignoredIds,setIgnoredIds] = useState<string[]>(()=>{
+    try { const raw=typeof window==='undefined'?null:window.sessionStorage.getItem(ignoredStorageKey); const parsed:unknown=raw?JSON.parse(raw):[]; return Array.isArray(parsed)?parsed.filter((id):id is string=>typeof id==='string'):[]; } catch { return []; }
+  });
   const [optimizing,setOptimizing] = useState(false);
   const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
   const [optimizerResult,setOptimizerResult] = useState<OptimizerResult|null>(null);
@@ -150,8 +153,8 @@ export default function Home() {
   function stopOptimizer() {
     optimizerAbort.current?.abort();optimizerAbort.current=null;setOptimizing(false);setOptimizerProgress(null);
   }
-  function openOptimizer() {setOptimizerResult(null);setOptimizerError('');setIgnoredIds([]);setOptimizerOpen(true);}
-  function closeOptimizer() {stopOptimizer();setOptimizerResult(null);setIgnoredIds([]);setOptimizerOpen(false);}
+  function openOptimizer() {setOptimizerResult(null);setOptimizerError('');setOptimizerOpen(true);}
+  function closeOptimizer() {stopOptimizer();setOptimizerResult(null);setOptimizerOpen(false);}
   function moveItem<T>(list:T[],index:number,offset:number) {
     const target=index+offset;if(target<0||target>=list.length)return list;const next=[...list];[next[index],next[target]]=[next[target],next[index]];return next;
   }
@@ -161,7 +164,8 @@ export default function Home() {
     setOptimizerBonuses(list=>names.map(name=>list.find(b=>b.name===name)??{name,level:bonusRanks(bonusByName.get(name)!).at(-1)?.level??1}));
   }
   function setBonusLevel(name:string,level:number) {setOptimizerBonuses(list=>list.map(b=>b.name===name?{...b,level}:b));}
-  /** Marks a suggested piece as not owned and re-runs the search without it. The list lasts while the dialog is open. */
+  useEffect(()=>{ try { window.sessionStorage.setItem(ignoredStorageKey,JSON.stringify(ignoredIds)); } catch {} },[ignoredIds]);
+  /** Marks a suggested piece as not owned and re-runs the search without it. The list is kept for the browser tab session. */
   function ignoreEquipment(id:string) {
     const next=ignoredIds.includes(id)?ignoredIds:[...ignoredIds,id];
     setIgnoredIds(next);setAnnouncement(`${equipmentById.get(id)?.name??'Item'} ignored. Searching again.`);
@@ -275,7 +279,7 @@ export default function Home() {
           {optimizerSkills.length>0&&<ol className="optimizer-priority" aria-label="Skill priority">{optimizerSkills.map((name,i)=><li key={name}><span className="priority-index">{optimizerBonuses.length+i+1}</span><SkillName name={name} passive/><span className="priority-actions"><button type="button" aria-label={`Move ${name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerSkill(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${name} down`} disabled={i===optimizerSkills.length-1||optimizing} onClick={()=>moveOptimizerSkill(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${name}`} disabled={optimizing} onClick={()=>setOptimizerSkills(list=>list.filter(item=>item!==name))}><X size={14}/></button></span></li>)}</ol>}
         </div>
         {!optimizerSkills.length&&!optimizerBonuses.length&&<p className="muted optimizer-hint">Select at least one bonus or skill. Earlier selections have higher priority.</p>}
-        {ignoredIds.length>0&&<div className="optimizer-section optimizer-ignored"><h3>Ignored equipment <span>Not owned · skipped until this dialog closes</span></h3><ul className="ignored-list">{ignoredIds.map(id=><li key={id}><Ban size={13}/><span>{equipmentById.get(id)?.name??id}</span><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds(list=>list.filter(item=>item!==id))}>Restore</button></li>)}</ul><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds([])}>Restore all</button></div>}
+        {ignoredIds.length>0&&<div className="optimizer-section optimizer-ignored"><h3>Ignored equipment <span>Not owned · remembered for this browser tab</span></h3><ul className="ignored-list">{ignoredIds.map(id=><li key={id}><Ban size={13}/><span>{equipmentById.get(id)?.name??id}</span><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds(list=>list.filter(item=>item!==id))}>Restore</button></li>)}</ul><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds([])}>Restore all</button></div>}
         {optimizerError&&<p className="optimizer-error" role="alert">{optimizerError}</p>}
         {optimizing&&<div className="optimizer-progress" role="status"><LoaderCircle size={15} className="spin"/><span>{optimizerProgress?.slot?`Searching ${labels[optimizerProgress.slot].toLowerCase()}…`:optimizerProgress?.stage==='fill'?'Placing decorations…':'Preparing candidates…'} {(optimizerProgress?.evaluated??0).toLocaleString()} combinations</span><span className="progress-bar"><i style={{width:`${Math.round(100*(optimizerProgress?.done??0)/(optimizerProgress?.total??1))}%`}}/></span></div>}
         <div className="optimizer-actions"><button className="primary-button" type="button" disabled={(!optimizerSkills.length&&!optimizerBonuses.length)||optimizing||!catalog} onClick={()=>runOptimizer()}>{optimizing?'Optimizing…':'Run optimizer'}</button>{optimizing?<button className="secondary-button" type="button" onClick={stopOptimizer}>Stop</button>:<button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button>}</div>
