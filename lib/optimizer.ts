@@ -36,12 +36,12 @@ export const armorSlots = ['head','chest','arms','waist','legs'] as const satisf
 export const weaponSlots = ['weapon','secondaryWeapon'] as const satisfies readonly OptimizerSlot[];
 export const bonusKinds = ['set','group'] as const;
 
-export interface BonusTarget { id:number; level:number }
+export interface BonusTarget { id:number; level:number; /** The equipped weapon contributes one piece toward this bonus (for example, a Gogmazios weapon's random set bonus). */ weaponHasSkill?:boolean }
 export interface OptimizerInput { build:Build; catalog:Catalog; skillIds:number[]; bonuses?:BonusTarget[]; defenseMode?:'base'|'max'; /** Equipment ids the player does not own; never chosen (equipped weapons are always kept). */ excludeIds?:Iterable<string> }
 export interface OptimizerProgress { stage:'prepare'|'search'|'fill'|'finish'; slot?:OptimizerSlot; done:number; total:number; evaluated:number; states:number; merged:number }
 export interface OptimizerOptions { beamWidth?:number; finalists?:number; fillBeamWidth?:number; signal?:AbortSignal; onProgress?:(progress:OptimizerProgress)=>void; yieldControl?:()=>Promise<void>; yieldEveryMs?:number }
 export interface OptimizedSkill { skill:Skill; priority:number; level:number; max:number; capped:boolean }
-export interface OptimizedBonus { skill:Skill; priority:number; target:number; level:number; max:number; pieces:number; piecesNeeded:number; reached:boolean }
+export interface OptimizedBonus { skill:Skill; priority:number; target:number; level:number; max:number; pieces:number; piecesNeeded:number; weaponHasSkill:boolean; reached:boolean }
 export interface OptimizerPiece { slot:OptimizerSlot; equipment:Equipment; decorations:(Decoration|null)[]; fixed:boolean; suggested:boolean }
 export interface OptimizerResult { build:Build; bonuses:OptimizedBonus[]; skills:OptimizedSkill[]; allCapped:boolean; pieces:OptimizerPiece[]; evaluated:number; candidates:Partial<Record<OptimizerSlot,number>>; approximate:boolean; notes:string[]; message?:string }
 
@@ -60,7 +60,7 @@ interface Scored { rank:number[]; vec:number[]; tie:number[] }
 interface Candidate extends Scored { equipment:Equipment; bonus:number[]; pool:Pool }
 interface Pick { slot:OptimizerSlot; candidate:Candidate }
 interface State extends Scored { bonus:number[]; pool:Pool; prev:State|null; pick:Pick|null; estimate?:Scored }
-interface BonusSpec { skill:Skill; target:number; needed:number; ranks:{level:number;pieces:number}[] }
+interface BonusSpec { skill:Skill; target:number; needed:number; weaponHasSkill:boolean; ranks:{level:number;pieces:number}[] }
 interface Context { catalog:Catalog; index:Map<number,number>; maxes:number[]; bonusIndex:Map<number,number>; bonusSpecs:BonusSpec[]; defenseMode:'base'|'max'; decoOptions:Map<string,ScoredDecoration[]>; bestFor:Map<string,ScoredDecoration|null> }
 interface ScoredDecoration extends Scored { decoration:Decoration }
 interface Fill { vec:number[]; free:number; chosen:(ScoredDecoration|null)[]; slots:DecoSlot[]; approximate:boolean }
@@ -259,7 +259,7 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
     const skill=catalog.skills.find(s=>s.id===t.id); const ranks=skill?bonusRanks(skill):[];
     if(!skill||!ranks.length) throw new OptimizerError('unknown-bonus',`Bonus ${t.id} is not a set or group bonus in the catalog.`);
     const rank=ranks.find(r=>r.level===t.level); if(!rank) throw new OptimizerError('unknown-bonus',`${skill.name} has no level ${t.level}.`);
-    return {skill,target:t.level,needed:rank.pieces,ranks};
+    return {skill,target:t.level,needed:rank.pieces,weaponHasSkill:t.weaponHasSkill===true,ranks};
   });
   const maxes=skills.map(skillMax);
   const ctx:Context={catalog,index:new Map(skillIds.map((id,i)=>[id,i])),maxes,bonusIndex:new Map(targets.map((t,i)=>[t.id,i])),bonusSpecs,defenseMode,decoOptions:new Map(),bestFor:new Map()};
@@ -309,7 +309,8 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   const stateDominates=(a:State,b:State)=>countsDominate(a.bonus,b.bonus)&&dominates(a,b)&&poolDominates(a.pool,b.pool);
   const estimateAll=async(list:State[])=>{ let n=0; for(const state of list){ state.estimate??=estimateOf(state); if((++n&2047)===0) await maybeYield(); } };
 
-  let states:State[]=[{bonus:zeros(bonusSpecs.length),rank:zeros(bonusSpecs.length),vec:zeros(maxes.length),tie:[0,0,0],pool:zeros(kinds.length*maxSlotLevel),prev:null,pick:null}];
+  const startingBonus=bonusSpecs.map(spec=>spec.weaponHasSkill?1:0);
+  let states:State[]=[{bonus:startingBonus,rank:rankOf(ctx,startingBonus),vec:zeros(maxes.length),tie:[0,0,0],pool:zeros(kinds.length*maxSlotLevel),prev:null,pick:null}];
   for(const [slotIndex,{slot,considered,options:slotOpts}] of slotLists.entries()){
     await maybeYield();
     if(!slotOpts.length) continue;
@@ -346,8 +347,8 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   const summary=summarize(optimized,catalog.skills,defenseMode);
   const bonuses:OptimizedBonus[]=bonusSpecs.map((spec,priority)=>{
     const entry=summary.bonuses.find(b=>b.skill.id===spec.skill.id);
-    const pieces=entry?.count??0,level=bonusLevel(spec.ranks,pieces,Infinity);
-    return {skill:spec.skill,priority:priority+1,target:spec.target,level,max:spec.ranks.at(-1)!.level,pieces,piecesNeeded:spec.needed,reached:level>=spec.target};
+    const pieces=(entry?.count??0)+(spec.weaponHasSkill?1:0),level=bonusLevel(spec.ranks,pieces,Infinity);
+    return {skill:spec.skill,priority:priority+1,target:spec.target,level,max:spec.ranks.at(-1)!.level,pieces,piecesNeeded:spec.needed,weaponHasSkill:spec.weaponHasSkill,reached:level>=spec.target};
   });
   const result:OptimizedSkill[]=skills.map((skill,priority)=>{ const max=maxes[priority]; const level=Math.min(max,summary.activeSkills.find(s=>s.skill.id===skill.id)?.total??0); return {skill,priority:priority+1,level,max,capped:level>=max}; });
   const missingBonuses=bonuses.filter(b=>!b.reached),missing=result.filter(s=>!s.capped);

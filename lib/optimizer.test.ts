@@ -178,6 +178,17 @@ test('set bonus targets honour the chosen level and outrank skills',async()=>{
   assert.match(levelTwo.notes[0],/No weapon is equipped/);
 });
 
+test('a weapon-provided set bonus reduces required equipment pieces by one',async()=>{
+  const catalog=syntheticCatalog();
+  const result=await run({},catalog,[1],[{id:5,level:2,weaponHasSkill:true}]);
+  assert.equal(result.bonuses[0].level,2);
+  assert.equal(result.bonuses[0].reached,true);
+  assert.equal(result.bonuses[0].pieces,4);
+  assert.equal(result.bonuses[0].piecesNeeded,4);
+  assert.equal(result.bonuses[0].weaponHasSkill,true);
+  assert.equal(Object.values(result.build).filter(e=>e?.equipment.bonuses.includes(5)).length,3,'three equipment pieces plus the weapon contribution reach four');
+});
+
 test('bonuses are ranked in selection order before skills',async()=>{
   const catalog=syntheticCatalog();
   const sigmaFirst=await run({},catalog,[],[{id:5,level:1},{id:6,level:1}]);

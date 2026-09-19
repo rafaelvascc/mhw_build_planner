@@ -39,9 +39,10 @@ function WeaponRowStats({weapon}:{weapon:Equipment}) {
   </div>;
 }
 type Picker = { slot:BuildSlot; index?:number } | null;
+type OptimizerBonusSelection = { name:string; level:number; weaponHasSkill:boolean };
 const sessionKeys = { skills:'hunter-forge.optimizer.skills', bonuses:'hunter-forge.optimizer.bonuses', ignored:'hunter-forge.optimizer.ignored' } as const;
 const parseStrings = (value:unknown) => Array.isArray(value)?value.filter((item):item is string=>typeof item==='string'):null;
-const parseBonuses = (value:unknown) => Array.isArray(value)?value.flatMap(item=>item&&typeof item==='object'&&typeof (item as {name?:unknown}).name==='string'&&Number.isInteger((item as {level?:unknown}).level)?[{name:(item as {name:string}).name,level:(item as {level:number}).level}]:[]):null;
+const parseBonuses = (value:unknown):OptimizerBonusSelection[]|null => Array.isArray(value)?value.flatMap(item=>item&&typeof item==='object'&&typeof (item as {name?:unknown}).name==='string'&&Number.isInteger((item as {level?:unknown}).level)?[{name:(item as {name:string}).name,level:(item as {level:number}).level,weaponHasSkill:(item as {weaponHasSkill?:unknown}).weaponHasSkill===true}]:[]):null;
 const isWeaponBuildSlot = (slot:BuildSlot) => slot==='weapon'||slot==='secondaryWeapon';
 
 function Choice({ label, value, onChange, options }: {label:string; value:string; onChange:(v:string)=>void; options:[string,string][]}) {
@@ -87,7 +88,7 @@ export default function Home() {
   const [urlReady,setUrlReady] = useState(false);
   const [optimizerOpen,setOptimizerOpen] = useState(false);
   const [optimizerSkills,setOptimizerSkills] = useSessionState<string[]>(sessionKeys.skills,[],parseStrings);
-  const [optimizerBonuses,setOptimizerBonuses] = useSessionState<{name:string;level:number}[]>(sessionKeys.bonuses,[],parseBonuses);
+  const [optimizerBonuses,setOptimizerBonuses] = useSessionState<OptimizerBonusSelection[]>(sessionKeys.bonuses,[],parseBonuses);
   const [ignoredIds,setIgnoredIds] = useSessionState<string[]>(sessionKeys.ignored,[],parseStrings);
   const [optimizing,setOptimizing] = useState(false);
   const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
@@ -162,9 +163,10 @@ export default function Home() {
   function moveOptimizerSkill(index:number,offset:number) {setOptimizerSkills(list=>moveItem(list,index,offset));}
   function moveOptimizerBonus(index:number,offset:number) {setOptimizerBonuses(list=>moveItem(list,index,offset));}
   function selectBonusNames(names:string[]) {
-    setOptimizerBonuses(list=>names.map(name=>list.find(b=>b.name===name)??{name,level:bonusRanks(bonusByName.get(name)!).at(-1)?.level??1}));
+    setOptimizerBonuses(list=>names.map(name=>list.find(b=>b.name===name)??{name,level:bonusRanks(bonusByName.get(name)!).at(-1)?.level??1,weaponHasSkill:false}));
   }
   function setBonusLevel(name:string,level:number) {setOptimizerBonuses(list=>list.map(b=>b.name===name?{...b,level}:b));}
+  function setBonusWeaponSkill(name:string,weaponHasSkill:boolean) {setOptimizerBonuses(list=>list.map(b=>b.name===name?{...b,weaponHasSkill}:b));}
   /** Marks a suggested piece as not owned and re-runs the search without it. The list is kept for the browser tab session. */
   function ignoreEquipment(id:string) {
     const next=ignoredIds.includes(id)?ignoredIds:[...ignoredIds,id];
@@ -174,7 +176,7 @@ export default function Home() {
   async function runOptimizer(excludeIds:string[]=ignoredIds) {
     if(!catalog)return;
     const skillIds=optimizerSkills.map(name=>catalog.skills.find(s=>s.name===name)?.id).filter((id):id is number=>id!=null);
-    const bonuses=optimizerBonuses.flatMap(b=>{const skill=bonusByName.get(b.name);return skill?[{id:skill.id,level:b.level}]:[];});
+    const bonuses=optimizerBonuses.flatMap(b=>{const skill=bonusByName.get(b.name);return skill?[{id:skill.id,level:b.level,weaponHasSkill:b.weaponHasSkill}]:[];});
     stopOptimizer();
     const controller=new AbortController();optimizerAbort.current=controller;
     setOptimizing(true);setOptimizerResult(null);setOptimizerError('');setOptimizerProgress(null);
@@ -272,7 +274,7 @@ export default function Home() {
         </div>
         <div className="optimizer-section"><h3>Set &amp; group bonuses <span>Highest priority · pick the level you want</span></h3>
           <div className="optimizer-picker"><SkillMultiSelect value={optimizerBonuses.map(b=>b.name)} onChange={selectBonusNames} skills={bonusSkills} label="Set & group bonuses" noun="bonus" plural="bonuses"/></div>
-          {optimizerBonuses.length>0&&<ol className="optimizer-priority" aria-label="Bonus priority">{optimizerBonuses.map((bonus,i)=>{const skill=bonusByName.get(bonus.name);return <li key={bonus.name}><span className="priority-index">{i+1}</span><SkillName name={bonus.name} passive/><select className="filter-select bonus-level" aria-label={`${bonus.name} target level`} value={bonus.level} disabled={optimizing} onChange={e=>setBonusLevel(bonus.name,+e.target.value)}>{(skill?bonusRanks(skill):[]).map(r=><option key={r.level} value={r.level}>Lv. {r.level} · {r.pieces} pieces{r.name?` · ${r.name}`:''}</option>)}</select><span className="priority-actions"><button type="button" aria-label={`Move ${bonus.name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerBonus(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${bonus.name} down`} disabled={i===optimizerBonuses.length-1||optimizing} onClick={()=>moveOptimizerBonus(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${bonus.name}`} disabled={optimizing} onClick={()=>setOptimizerBonuses(list=>list.filter(item=>item.name!==bonus.name))}><X size={14}/></button></span></li>;})}</ol>}
+          {optimizerBonuses.length>0&&<ol className="optimizer-priority" aria-label="Bonus priority">{optimizerBonuses.map((bonus,i)=>{const skill=bonusByName.get(bonus.name);return <li key={bonus.name}><span className="priority-index">{i+1}</span><SkillName name={bonus.name} passive/><select className="filter-select bonus-level" aria-label={`${bonus.name} target level`} value={bonus.level} disabled={optimizing} onChange={e=>setBonusLevel(bonus.name,+e.target.value)}>{(skill?bonusRanks(skill):[]).map(r=><option key={r.level} value={r.level}>Lv. {r.level} · {r.pieces} pieces{r.name?` · ${r.name}`:''}</option>)}</select><label className="optimizer-weapon-skill"><input type="checkbox" checked={bonus.weaponHasSkill} disabled={optimizing} onChange={e=>setBonusWeaponSkill(bonus.name,e.target.checked)}/><span>My weapon has this skill</span></label><span className="priority-actions"><button type="button" aria-label={`Move ${bonus.name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerBonus(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${bonus.name} down`} disabled={i===optimizerBonuses.length-1||optimizing} onClick={()=>moveOptimizerBonus(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${bonus.name}`} disabled={optimizing} onClick={()=>setOptimizerBonuses(list=>list.filter(item=>item.name!==bonus.name))}><X size={14}/></button></span></li>;})}</ol>}
         </div>
         <div className="optimizer-section"><h3>Skills <span>Maximized after the bonuses, in this order</span></h3>
           <div className="optimizer-picker"><SkillMultiSelect value={optimizerSkills} onChange={setOptimizerSkills} skills={ordinarySkills}/></div>
@@ -287,7 +289,7 @@ export default function Home() {
         {optimizing&&<div className="optimizer-progress" role="status"><LoaderCircle size={15} className="spin"/><span>Searching again without the ignored equipment… {(optimizerProgress?.evaluated??0).toLocaleString()} combinations</span><span className="progress-bar"><i style={{width:`${Math.round(100*(optimizerProgress?.done??0)/(optimizerProgress?.total??1))}%`}}/></span></div>}
         {optimizerResult.message?<p className="optimizer-warning" role="status">{optimizerResult.message}</p>:<p className="optimizer-success" role="status"><Check size={14}/> Every selected bonus and skill reached its target.</p>}
         {optimizerResult.approximate&&<p className="inline-note">The search was bounded to stay fast. This is the best build found, not a proven optimum.</p>}
-        {optimizerResult.bonuses.length>0&&<table className="optimizer-skills"><thead><tr><th>#</th><th>Set / group bonus</th><th>Level</th><th>Target</th><th>Pieces</th><th>Reached</th></tr></thead><tbody>{optimizerResult.bonuses.map(b=><tr key={b.skill.id} className={b.reached?'capped':'partial'}><td>{b.priority}</td><td><SkillName id={b.skill.id} passive/></td><td>{b.level}</td><td>{b.target} <small className="muted">/ {b.max}</small></td><td>{b.pieces} <small className="muted">/ {b.piecesNeeded}</small></td><td><span className="capped-cell">{b.reached?<><Check size={14}/> Yes</>:'No'}</span></td></tr>)}</tbody></table>}
+        {optimizerResult.bonuses.length>0&&<table className="optimizer-skills"><thead><tr><th>#</th><th>Set / group bonus</th><th>Level</th><th>Target</th><th>Pieces</th><th>Reached</th></tr></thead><tbody>{optimizerResult.bonuses.map(b=><tr key={b.skill.id} className={b.reached?'capped':'partial'}><td>{b.priority}</td><td><SkillName id={b.skill.id} passive/></td><td>{b.level}</td><td>{b.target} <small className="muted">/ {b.max}</small></td><td>{b.pieces} <small className="muted">/ {b.piecesNeeded}{b.weaponHasSkill?' · 1 from weapon':''}</small></td><td><span className="capped-cell">{b.reached?<><Check size={14}/> Yes</>:'No'}</span></td></tr>)}</tbody></table>}
         {optimizerResult.skills.length>0&&<table className="optimizer-skills"><thead><tr><th>#</th><th>Skill</th><th>Level</th><th>Max</th><th>Capped</th></tr></thead><tbody>{optimizerResult.skills.map(s=><tr key={s.skill.id} className={s.capped?'capped':'partial'}><td>{optimizerResult.bonuses.length+s.priority}</td><td><SkillName id={s.skill.id} passive/></td><td>{s.level}</td><td>{s.max}</td><td><span className="capped-cell">{s.capped?<><Check size={14}/> Yes</>:'No'}</span></td></tr>)}</tbody></table>}
         <h3>Optimized equipment</h3>
         <ul className="optimizer-pieces">{optimizerResult.pieces.map(p=><li key={p.slot}><div className={`equipment-icon ${p.fixed?'weapon-icon':''}`}><EquipmentIcon slot={p.slot} kind={p.equipment.kind} rarity={p.equipment.rarity} size={28}/></div><div><div className="slot-label">{labels[p.slot]}{p.fixed?<span className="rarity">KEPT</span>:p.suggested?<span className="rarity suggested">SUGGESTED WEAPON</span>:<span className="rarity" style={rarityStyle(p.equipment.rarity)}>RARITY {p.equipment.rarity}</span>}</div><strong>{p.equipment.name}</strong><p>{p.equipment.skills.length?skillText(p.equipment.skills):'No innate skills'}{p.equipment.bonuses.length>0&&<> · {p.equipment.bonuses.map((id,i)=><span key={id} className="result-bonus">{i>0&&' · '}<SkillName id={id} passive/></span>)}</>}</p>{p.equipment.slots.length>0&&<div className="optimizer-decos">{p.equipment.slots.map((slot,j)=>{const d=p.decorations[j];return <span key={j} className={`deco-chip ${d?'filled':''} ${slot.kind}`}>{d?<DecorationIcon decoration={d} size={20}/>:<DecorationSlotIcon level={slot.level} kind={slot.kind} size={20}/>}{d?d.name:`Empty Lv. ${slot.level}`}</span>;})}</div>}</div>{!p.fixed&&<button type="button" className="ignore-button" aria-label={`I don't have ${p.equipment.name}; search again without it`} title="Search again without this item" disabled={optimizing} onClick={()=>ignoreEquipment(p.equipment.id)}><Ban size={13}/> I don&apos;t have this</button>}</li>)}</ul>
