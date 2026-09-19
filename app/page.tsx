@@ -157,6 +157,7 @@ export default function Home() {
   }
   function openOptimizer() {setOptimizerResult(null);setOptimizerError('');setOptimizerOpen(true);}
   function closeOptimizer() {stopOptimizer();setOptimizerResult(null);setOptimizerOpen(false);}
+  function backToOptimizerSelection() {stopOptimizer();setOptimizerResult(null);setOptimizerError('');}
   function moveItem<T>(list:T[],index:number,offset:number) {
     const target=index+offset;if(target<0||target>=list.length)return list;const next=[...list];[next[index],next[target]]=[next[target],next[index]];return next;
   }
@@ -296,7 +297,7 @@ export default function Home() {
         {ignoredIds.length>0&&<p className="optimizer-meta">Ignored as not owned: {ignoredIds.map(id=>equipmentById.get(id)?.name??id).join(', ')}. <button type="button" className="text-button" disabled={optimizing} onClick={()=>{setIgnoredIds([]);void runOptimizer([]);}}>Restore all and search again</button></p>}
         {optimizedSummary&&<p className="optimizer-meta">Defense {optimizedSummary.defense} · Decorations {optimizedSummary.usedSlots} / {optimizedSummary.totalSlots} · {optimizerResult.evaluated.toLocaleString()} combinations evaluated · Candidates: {Object.entries(optimizerResult.candidates).map(([slot,count])=>`${labels[slot as BuildSlot]} ${count}`).join(', ')}</p>}
         {optimizerResult.notes.map(note=><p className="inline-note" key={note}>{note}</p>)}
-        <div className="optimizer-actions"><button className="primary-button" type="button" onClick={applyOptimizer}>Apply optimized build</button><button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button></div>
+        <div className="optimizer-actions"><button className="primary-button" type="button" onClick={applyOptimizer}>Apply optimized build</button><button className="secondary-button" type="button" onClick={backToOptimizerSelection}>Back to skill selection</button><button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button></div>
       </>}
     </DialogContent></Dialog>
   </div></SkillDescriptions>;
