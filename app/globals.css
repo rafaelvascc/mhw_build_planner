@@ -128,6 +128,7 @@ select.filter-select option{background:#242d31;color:#e8edef}
 .optimize-button{border-color:#8a734e;background:#3d3427}.optimize-button:hover{background:#4a3f2e}
 .optimizer-dialog{width:760px!important;max-width:calc(100vw - 32px)!important;border-color:#445158!important}
 .optimizer-context{display:grid;gap:5px;font-size:12px;color:#a0adb3;border:1px solid #354248;border-radius:6px;padding:12px 14px}.optimizer-context b{color:#e6edef;font-weight:500;margin-right:6px}
+.build-charm-button{display:inline-flex;align-items:center;gap:7px;justify-self:start}.optimizer-charm-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.optimizer-charm-row .text-button{display:inline-flex;align-items:center;gap:5px;flex-shrink:0}@media(max-width:600px){.optimizer-charm-row{align-items:flex-start;flex-direction:column;gap:5px}}
 .optimizer-picker .filter-label>span{display:none}.optimizer-picker .skill-dropdown{z-index:20}.optimizer-picker .skill-dropdown-menu{position:static;margin-top:6px;box-shadow:none;max-height:none}
 .optimizer-hint{font-size:12px}
 .optimizer-priority{list-style:none;margin:0;padding:0;display:grid;gap:6px}.optimizer-priority li{display:flex;align-items:center;gap:10px;border:1px solid #354248;border-radius:6px;padding:7px 10px;font-size:13px;background:#1f2629}

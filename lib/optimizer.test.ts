@@ -92,7 +92,7 @@ test('decorations respect slot kind and level compatibility',async()=>{
   assert.equal(level(result,'Omega'),2);
 });
 
-test('the configured custom charm is a candidate with its skills and slots preserved',async()=>{
+test('the configured custom charm is fixed with its skills and slots preserved',async()=>{
   const base=data.equipments.find(e=>e.slot==='charm'&&e.random)!;
   const weakness=skillId('Weakness Exploit');
   const custom:Equipment={...base,skills:[{id:weakness,level:5}],slots:[{kind:'armor',level:3},{kind:'weapon',level:2}]};
@@ -102,8 +102,9 @@ test('the configured custom charm is a candidate with its skills and slots prese
   assert.deepEqual(charm?.skills,custom.skills);assert.deepEqual(charm?.slots,custom.slots);
   assert.equal(result.build.charm?.decorations.length,2);
   const candidates=slotCandidates(equip({},custom),data,'charm');
-  assert.equal(candidates.filter(e=>e.random).length,1);
+  assert.deepEqual(candidates.map(e=>e.id),[custom.id]);
   assert.equal(candidates[0].skills[0].level,5);
+  assert.equal(result.pieces.find(piece=>piece.slot==='charm')?.fixed,true);
 });
 
 test('random charm templates are excluded unless configured in the build',async()=>{
@@ -272,8 +273,8 @@ test('excluded equipment is never chosen and the search continues with the next 
   assert.equal(stillEquipped.build.weapon?.equipment.name,'Test Sword','the equipped weapon is never dropped');
   const base=data.equipments.find(e=>e.slot==='charm'&&e.random)!;
   const custom:Equipment={...base,skills:[{id:skillId('Weakness Exploit'),level:5}],slots:[]};
-  const noCustom=await optimizeBuild({build:equip({},custom),catalog:data,skillIds:[skillId('Weakness Exploit')],excludeIds:[base.id]},{yieldControl:async()=>{}});
-  assert.equal(noCustom.build.charm?.equipment.random,false,'an ignored custom charm falls back to forged charms');
+  const fixedCustom=await optimizeBuild({build:equip({},custom),catalog:data,skillIds:[skillId('Weakness Exploit')],excludeIds:[base.id]},{yieldControl:async()=>{}});
+  assert.equal(fixedCustom.build.charm?.equipment.id,base.id,'an equipped custom charm stays fixed even if its template id was previously ignored');
 });
 
 test('an aborted signal stops the search with an aborted error',async()=>{

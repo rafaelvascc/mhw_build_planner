@@ -205,7 +205,7 @@ export function bonusWeapons(build:Build,catalog:Catalog,slot:'weapon'|'secondar
   return catalog.equipments.filter(e=>e.slot==='weapon'&&e.id!==current.id&&e.kind===current.kind&&e.bonuses.some(id=>ids.has(id)));
 }
 
-/** Equipment considered for a slot: the equipped weapon plus bonus-carrying weapons of its type, forged charms plus the configured custom charm, or catalog armor. Excluded ids are dropped everywhere except the equipped weapons. */
+/** Equipment considered for a slot: the equipped weapon plus bonus-carrying weapons of its type, the configured custom charm (fixed) or forged charms, and catalog armor. Excluded ids are dropped everywhere except fixed weapons and a fixed custom charm. */
 export function slotCandidates(build:Build,catalog:Catalog,slot:OptimizerSlot,bonusIds:Iterable<number>=[],excludeIds:Iterable<string>=[]):Equipment[] {
   const excluded=new Set(excludeIds);
   if(slot==='weapon'||slot==='secondaryWeapon'){
@@ -214,9 +214,9 @@ export function slotCandidates(build:Build,catalog:Catalog,slot:OptimizerSlot,bo
     return current?[current,...suggestions]:suggestions;
   }
   if(slot==='charm'){
-    const forged=catalog.equipments.filter(e=>e.slot==='charm'&&!e.random&&!excluded.has(e.id));
     const current=build.charm?.equipment;
-    return current?.random&&!excluded.has(current.id)?[current,...forged]:forged;
+    if(current?.random) return [current];
+    return catalog.equipments.filter(e=>e.slot==='charm'&&!e.random&&!excluded.has(e.id));
   }
   return catalog.equipments.filter(e=>e.slot===slot&&!excluded.has(e.id));
 }
@@ -243,7 +243,7 @@ function materialize(state:State,fill:Fill,current:Build):{build:Build;pieces:Op
   }
   const pieces=picks.map(({slot,candidate})=>{
     const isWeapon=(weaponSlots as readonly string[]).includes(slot);
-    const fixed=isWeapon&&current[slot]?.equipment.id===candidate.equipment.id;
+    const fixed=(isWeapon&&current[slot]?.equipment.id===candidate.equipment.id)||(slot==='charm'&&current.charm?.equipment.random===true&&current.charm.equipment.id===candidate.equipment.id);
     return {slot,equipment:candidate.equipment,decorations:build[slot]?.decorations??[],fixed,suggested:isWeapon&&!fixed};
   });
   return {build,pieces};
