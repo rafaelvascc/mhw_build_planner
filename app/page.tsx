@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type SVGProps } from 'react';
-import { Swords, Plus, Shield, Gem, ChevronRight, X, Search, SlidersHorizontal, Flame, Droplets, Zap, Snowflake, Orbit, Skull, Bomb, Sparkles, CircleHelp, Check, RotateCcw, Copy, ArrowUp, ArrowDown, LoaderCircle, Ban } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type DragEvent as ReactDragEvent, type SVGProps } from 'react';
+import { Swords, Plus, Shield, Gem, ChevronRight, X, Search, SlidersHorizontal, Flame, Droplets, Zap, Snowflake, Orbit, Skull, Bomb, Sparkles, CircleHelp, Check, RotateCcw, Copy, GripVertical, LoaderCircle, Ban } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AppDropdown, type AppDropdownOption } from '@/components/app-dropdown';
 import { AppModal } from '@/components/app-modal';
@@ -41,6 +41,7 @@ function WeaponRowStats({weapon}:{weapon:Equipment}) {
 }
 type Picker = { slot:BuildSlot; index?:number } | null;
 type OptimizerBonusSelection = { name:string; level:number; weaponHasSkill:boolean };
+type OptimizerPriorityDrag = { kind:'bonus'|'skill'; name:string };
 type CharmBuilderReturn = 'picker'|'optimizer'|null;
 const sessionKeys = { skills:'hunter-forge.optimizer.skills', bonuses:'hunter-forge.optimizer.bonuses', ignored:'hunter-forge.optimizer.ignored' } as const;
 const parseStrings = (value:unknown) => Array.isArray(value)?value.filter((item):item is string=>typeof item==='string'):null;
@@ -60,9 +61,9 @@ function SkillSearch({ value, onChange, skills, label='Skill' }: {value:string;o
   return <AppDropdown label={label} value={value} onChange={onChange} options={options} searchable placeholder="Select a skill" searchPlaceholder="Search skills…" emptyText="No matching skills"/>;
 }
 
-function SkillMultiSelect({ value, onChange, skills, label='Skills', noun='skill', plural=`${noun}s`, inline=false }: {value:string[];onChange:(v:string[])=>void;skills:Skill[];label?:string;noun?:string;plural?:string;inline?:boolean}) {
+function SkillMultiSelect({ value, onChange, skills, label='Skills', noun='skill', plural=`${noun}s` }: {value:string[];onChange:(v:string[])=>void;skills:Skill[];label?:string;noun?:string;plural?:string}) {
   const options=useMemo(()=>skillOptions(skills),[skills]);
-  return <AppDropdown multiple label={label} value={value} onChange={onChange} options={options} searchable inline={inline} selectionLabel={count=>`${count} ${count===1?noun:plural} selected`} placeholder={`Any ${noun}`} searchPlaceholder={`Search ${plural}…`} emptyText={`No matching ${plural}`} clearLabel={`Clear selected ${plural}`}/>;
+  return <AppDropdown multiple label={label} value={value} onChange={onChange} options={options} searchable selectionLabel={count=>`${count} ${count===1?noun:plural} selected`} placeholder={`Any ${noun}`} searchPlaceholder={`Search ${plural}…`} emptyText={`No matching ${plural}`} clearLabel={`Clear selected ${plural}`}/>;
 }
 
 export default function Home() {
@@ -89,6 +90,7 @@ export default function Home() {
   const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
   const [optimizerResult,setOptimizerResult] = useState<OptimizerResult|null>(null);
   const [optimizerError,setOptimizerError] = useState('');
+  const [draggedPriority,setDraggedPriority] = useState<OptimizerPriorityDrag|null>(null);
   const optimizerAbort = useRef<AbortController|null>(null);
 
   useEffect(()=>{
@@ -169,11 +171,28 @@ export default function Home() {
   function openOptimizer() {setOptimizerResult(null);setOptimizerError('');setOptimizerOpen(true);}
   function closeOptimizer() {stopOptimizer();setOptimizerResult(null);setOptimizerOpen(false);}
   function backToOptimizerSelection() {stopOptimizer();setOptimizerResult(null);setOptimizerError('');}
-  function moveItem<T>(list:T[],index:number,offset:number) {
-    const target=index+offset;if(target<0||target>=list.length)return list;const next=[...list];[next[index],next[target]]=[next[target],next[index]];return next;
+  function reorderItem<T>(list:T[],from:number,to:number) {
+    if(from<0||to<0||from>=list.length||to>=list.length||from===to)return list;
+    const next=[...list], [item]=next.splice(from,1);next.splice(to,0,item);return next;
   }
-  function moveOptimizerSkill(index:number,offset:number) {setOptimizerSkills(list=>moveItem(list,index,offset));}
-  function moveOptimizerBonus(index:number,offset:number) {setOptimizerBonuses(list=>moveItem(list,index,offset));}
+  function moveOptimizerSkill(index:number,offset:number) {setOptimizerSkills(list=>reorderItem(list,index,index+offset));}
+  function moveOptimizerBonus(index:number,offset:number) {setOptimizerBonuses(list=>reorderItem(list,index,index+offset));}
+  function startPriorityDrag(event:ReactDragEvent<HTMLButtonElement>,kind:OptimizerPriorityDrag['kind'],name:string) {
+    if(optimizing){event.preventDefault();return;}
+    setDraggedPriority({kind,name});event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',`${kind}:${name}`);
+    const card=event.currentTarget.closest('li');if(card)event.dataTransfer.setDragImage(card,20,20);
+  }
+  function dragPriorityOver(event:ReactDragEvent<HTMLElement>,kind:OptimizerPriorityDrag['kind'],targetName:string) {
+    if(!draggedPriority||draggedPriority.kind!==kind)return;
+    event.preventDefault();event.dataTransfer.dropEffect='move';
+    const bounds=event.currentTarget.getBoundingClientRect(),afterCenter=event.clientY>bounds.top+bounds.height/2;
+    const move=(list:string[])=>{const from=list.indexOf(draggedPriority.name),to=list.indexOf(targetName);if((from<to&&!afterCenter)||(from>to&&afterCenter))return list;return reorderItem(list,from,to);};
+    if(kind==='skill')setOptimizerSkills(move);
+    else setOptimizerBonuses(list=>{const names=list.map(item=>item.name),next=move(names);return next===names?list:next.map(name=>list.find(item=>item.name===name)!);});
+  }
+  function finishPriorityDrag() {
+    if(draggedPriority)setAnnouncement(`${draggedPriority.name} priority updated.`);setDraggedPriority(null);
+  }
   function selectBonusNames(names:string[]) {
     setOptimizerBonuses(list=>names.map(name=>list.find(b=>b.name===name)??{name,level:bonusRanks(bonusByName.get(name)!).at(-1)?.level??1,weaponHasSkill:false}));
   }
@@ -301,13 +320,13 @@ export default function Home() {
           <span><b>Secondary weapon</b> {build.secondaryWeapon?.equipment.name??'None equipped'}</span>
           <div className="optimizer-charm-row"><span><b>Charm</b> {build.charm?.equipment.random?`${build.charm.equipment.name} · custom charm kept`:'All forged charms considered'}</span><button className="text-button" type="button" disabled={optimizing} onClick={()=>openCharmBuilder('optimizer')}><SlidersHorizontal size={13}/> Build my charm</button></div>
         </div>
-        <div className="optimizer-section"><h3>Set &amp; group bonuses <span>Highest priority · pick the level you want</span></h3>
-          <div className="optimizer-picker"><SkillMultiSelect inline value={optimizerBonuses.map(b=>b.name)} onChange={selectBonusNames} skills={bonusSkills} label="Set & group bonuses" noun="bonus" plural="bonuses"/></div>
-          {optimizerBonuses.length>0&&<ol className="optimizer-priority" aria-label="Bonus priority">{optimizerBonuses.map((bonus,i)=>{const skill=bonusByName.get(bonus.name);return <li key={bonus.name}><span className="priority-index">{i+1}</span><SkillName name={bonus.name} passive/><AppDropdown className="bonus-level-field" triggerClassName="bonus-level" label={`${bonus.name} target level`} value={String(bonus.level)} disabled={optimizing} onChange={value=>setBonusLevel(bonus.name,+value)} options={(skill?bonusRanks(skill):[]).map(rank=>({value:String(rank.level),label:`Lv. ${rank.level} · ${rank.pieces} pieces${rank.name?` · ${rank.name}`:''}`}))}/><label className="optimizer-weapon-skill"><input type="checkbox" checked={bonus.weaponHasSkill} disabled={optimizing} onChange={e=>setBonusWeaponSkill(bonus.name,e.target.checked)}/><span>My weapon has this skill</span></label><span className="priority-actions"><button type="button" aria-label={`Move ${bonus.name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerBonus(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${bonus.name} down`} disabled={i===optimizerBonuses.length-1||optimizing} onClick={()=>moveOptimizerBonus(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${bonus.name}`} disabled={optimizing} onClick={()=>setOptimizerBonuses(list=>list.filter(item=>item.name!==bonus.name))}><X size={14}/></button></span></li>;})}</ol>}
+        <div className="optimizer-section"><h3>Set &amp; group bonuses <span>Highest priority · pick a level and drag to reorder</span></h3>
+          <div className="optimizer-picker"><SkillMultiSelect value={optimizerBonuses.map(b=>b.name)} onChange={selectBonusNames} skills={bonusSkills} label="Set & group bonuses" noun="bonus" plural="bonuses"/></div>
+          {optimizerBonuses.length>0&&<ol className="optimizer-priority" aria-label="Bonus priority">{optimizerBonuses.map((bonus,i)=>{const skill=bonusByName.get(bonus.name),dragging=draggedPriority?.kind==='bonus'&&draggedPriority.name===bonus.name;return <li key={bonus.name} className={dragging?'priority-dragging':''} onDragOver={event=>dragPriorityOver(event,'bonus',bonus.name)} onDrop={event=>{event.preventDefault();finishPriorityDrag();}}><button type="button" className="priority-drag-handle" draggable={!optimizing} disabled={optimizing} aria-label={`Reorder ${bonus.name}. Use up and down arrow keys or drag.`} title="Drag to change priority" onDragStart={event=>startPriorityDrag(event,'bonus',bonus.name)} onDragEnd={finishPriorityDrag} onKeyDown={event=>{if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();moveOptimizerBonus(i,event.key==='ArrowUp'?-1:1);}}}><GripVertical size={16}/></button><span className="priority-index">{i+1}</span><SkillName name={bonus.name} passive/><AppDropdown className="bonus-level-field" triggerClassName="bonus-level" label={`${bonus.name} target level`} value={String(bonus.level)} disabled={optimizing} onChange={value=>setBonusLevel(bonus.name,+value)} options={(skill?bonusRanks(skill):[]).map(rank=>({value:String(rank.level),label:`Lv. ${rank.level} · ${rank.pieces} pieces${rank.name?` · ${rank.name}`:''}`}))}/><label className="optimizer-weapon-skill"><input type="checkbox" checked={bonus.weaponHasSkill} disabled={optimizing} onChange={e=>setBonusWeaponSkill(bonus.name,e.target.checked)}/><span>My weapon has this skill</span></label><span className="priority-actions"><button type="button" aria-label={`Remove ${bonus.name}`} disabled={optimizing} onClick={()=>setOptimizerBonuses(list=>list.filter(item=>item.name!==bonus.name))}><X size={14}/></button></span></li>;})}</ol>}
         </div>
-        <div className="optimizer-section"><h3>Skills <span>Maximized after the bonuses, in this order</span></h3>
-          <div className="optimizer-picker"><SkillMultiSelect inline value={optimizerSkills} onChange={setOptimizerSkills} skills={ordinarySkills}/></div>
-          {optimizerSkills.length>0&&<ol className="optimizer-priority" aria-label="Skill priority">{optimizerSkills.map((name,i)=><li key={name}><span className="priority-index">{optimizerBonuses.length+i+1}</span><SkillName name={name} passive/><span className="priority-actions"><button type="button" aria-label={`Move ${name} up`} disabled={i===0||optimizing} onClick={()=>moveOptimizerSkill(i,-1)}><ArrowUp size={14}/></button><button type="button" aria-label={`Move ${name} down`} disabled={i===optimizerSkills.length-1||optimizing} onClick={()=>moveOptimizerSkill(i,1)}><ArrowDown size={14}/></button><button type="button" aria-label={`Remove ${name}`} disabled={optimizing} onClick={()=>setOptimizerSkills(list=>list.filter(item=>item!==name))}><X size={14}/></button></span></li>)}</ol>}
+        <div className="optimizer-section"><h3>Skills <span>Maximized after bonuses · drag to reorder</span></h3>
+          <div className="optimizer-picker"><SkillMultiSelect value={optimizerSkills} onChange={setOptimizerSkills} skills={ordinarySkills}/></div>
+          {optimizerSkills.length>0&&<ol className="optimizer-priority" aria-label="Skill priority">{optimizerSkills.map((name,i)=>{const dragging=draggedPriority?.kind==='skill'&&draggedPriority.name===name;return <li key={name} className={dragging?'priority-dragging':''} onDragOver={event=>dragPriorityOver(event,'skill',name)} onDrop={event=>{event.preventDefault();finishPriorityDrag();}}><button type="button" className="priority-drag-handle" draggable={!optimizing} disabled={optimizing} aria-label={`Reorder ${name}. Use up and down arrow keys or drag.`} title="Drag to change priority" onDragStart={event=>startPriorityDrag(event,'skill',name)} onDragEnd={finishPriorityDrag} onKeyDown={event=>{if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();moveOptimizerSkill(i,event.key==='ArrowUp'?-1:1);}}}><GripVertical size={16}/></button><span className="priority-index">{optimizerBonuses.length+i+1}</span><SkillName name={name} passive/><span className="priority-actions"><button type="button" aria-label={`Remove ${name}`} disabled={optimizing} onClick={()=>setOptimizerSkills(list=>list.filter(item=>item!==name))}><X size={14}/></button></span></li>;})}</ol>}
         </div>
         {!optimizerSkills.length&&!optimizerBonuses.length&&<p className="muted optimizer-hint">Select at least one bonus or skill. Earlier selections have higher priority.</p>}
         {ignoredIds.length>0&&<div className="optimizer-section optimizer-ignored"><h3>Ignored equipment <span>Not owned · remembered for this browser tab</span></h3><ul className="ignored-list">{ignoredIds.map(id=><li key={id}><Ban size={13}/><span>{equipmentById.get(id)?.name??id}</span><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds(list=>list.filter(item=>item!==id))}>Restore</button></li>)}</ul><button type="button" className="text-button" disabled={optimizing} onClick={()=>setIgnoredIds([])}>Restore all</button></div>}
