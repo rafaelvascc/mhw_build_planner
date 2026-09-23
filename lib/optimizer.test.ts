@@ -179,6 +179,21 @@ test('set bonus targets honour the chosen level and outrank skills',async()=>{
   assert.match(levelTwo.notes[0],/No weapon is equipped/);
 });
 
+test('even mode favors a balanced spread without sacrificing total skill points',async()=>{
+  const catalog=syntheticCatalog(),template=find_(catalog,'Alpha Helm');
+  catalog.decorations=[];
+  catalog.equipments=[
+    {...template,id:'h-focused',name:'Focused Helm',skills:[{id:1,level:3},{id:2,level:1}]},
+    {...template,id:'h-balanced',name:'Balanced Helm',skills:[{id:1,level:2},{id:2,level:2}]},
+  ];
+  const priority=await optimizeBuild({build:{},catalog,skillIds:[1,2],mode:'priority'},{yieldControl:async()=>{}});
+  const even=await optimizeBuild({build:{},catalog,skillIds:[1,2],mode:'even'},{yieldControl:async()=>{}});
+  assert.equal(priority.build.head?.equipment.name,'Focused Helm');
+  assert.deepEqual(priority.skills.map(skill=>skill.level),[3,1]);
+  assert.equal(even.build.head?.equipment.name,'Balanced Helm');
+  assert.deepEqual(even.skills.map(skill=>skill.level),[2,2]);
+});
+
 test('a weapon-provided set bonus reduces required equipment pieces by one',async()=>{
   const catalog=syntheticCatalog();
   const result=await run({},catalog,[1],[{id:5,level:2,weaponHasSkill:true}]);

@@ -11,7 +11,7 @@ import { EquipmentIcon, DecorationIcon, DecorationSlotIcon, rarityStyle } from '
 import { slots, labels, weaponTypes, elements, emptyFilters, filterEquipment, compatible, equip, decorate, summarize, type Skill, type EquipmentSlot, type BuildSlot, type Build, type Catalog, type Equipment, type Filters, type SkillRef, type DecoSlot } from '@/lib/planner';
 import { decodeBuild, encodeBuild } from '@/lib/build-url';
 import { useSessionState } from '@/hooks/use-session-state';
-import { optimizeBuild, applyOptimizedBuild, bonusRanks, bonusKinds, OptimizerError, type OptimizerResult, type OptimizerProgress } from '@/lib/optimizer';
+import { optimizeBuild, applyOptimizedBuild, bonusRanks, bonusKinds, OptimizerError, type OptimizerMode, type OptimizerResult, type OptimizerProgress } from '@/lib/optimizer';
 
 
 function DragonHeadIcon({size=24, strokeWidth=1.8, ...props}: SVGProps<SVGSVGElement> & {size?:number|string}) {
@@ -43,9 +43,10 @@ type Picker = { slot:BuildSlot; index?:number } | null;
 type OptimizerBonusSelection = { name:string; level:number; weaponHasSkill:boolean };
 type OptimizerPriorityDrag = { kind:'bonus'|'skill'; name:string };
 type CharmBuilderReturn = 'picker'|'optimizer'|null;
-const sessionKeys = { skills:'hunter-forge.optimizer.skills', bonuses:'hunter-forge.optimizer.bonuses', ignored:'hunter-forge.optimizer.ignored' } as const;
+const sessionKeys = { skills:'hunter-forge.optimizer.skills', bonuses:'hunter-forge.optimizer.bonuses', mode:'hunter-forge.optimizer.mode', ignored:'hunter-forge.optimizer.ignored' } as const;
 const parseStrings = (value:unknown) => Array.isArray(value)?value.filter((item):item is string=>typeof item==='string'):null;
 const parseBonuses = (value:unknown):OptimizerBonusSelection[]|null => Array.isArray(value)?value.flatMap(item=>item&&typeof item==='object'&&typeof (item as {name?:unknown}).name==='string'&&Number.isInteger((item as {level?:unknown}).level)?[{name:(item as {name:string}).name,level:(item as {level:number}).level,weaponHasSkill:(item as {weaponHasSkill?:unknown}).weaponHasSkill===true}]:[]):null;
+const parseOptimizerMode = (value:unknown):OptimizerMode|null => value==='priority'||value==='even'?value:null;
 const isWeaponBuildSlot = (slot:BuildSlot) => slot==='weapon'||slot==='secondaryWeapon';
 
 function Choice({ label, value, onChange, options }: {label:string; value:string; onChange:(v:string)=>void; options:[string,string][]}) {
@@ -85,6 +86,7 @@ export default function Home() {
   const [optimizerOpen,setOptimizerOpen] = useState(false);
   const [optimizerSkills,setOptimizerSkills] = useSessionState<string[]>(sessionKeys.skills,[],parseStrings);
   const [optimizerBonuses,setOptimizerBonuses] = useSessionState<OptimizerBonusSelection[]>(sessionKeys.bonuses,[],parseBonuses);
+  const [optimizerMode,setOptimizerMode] = useSessionState<OptimizerMode>(sessionKeys.mode,'priority',parseOptimizerMode);
   const [ignoredIds,setIgnoredIds] = useSessionState<string[]>(sessionKeys.ignored,[],parseStrings);
   const [optimizing,setOptimizing] = useState(false);
   const [optimizerProgress,setOptimizerProgress] = useState<OptimizerProgress|null>(null);
@@ -212,7 +214,7 @@ export default function Home() {
     const controller=new AbortController();optimizerAbort.current=controller;
     setOptimizing(true);setOptimizerResult(null);setOptimizerError('');setOptimizerProgress(null);
     try {
-      const result=await optimizeBuild({build,catalog,skillIds,bonuses,defenseMode,excludeIds},{signal:controller.signal,onProgress:setOptimizerProgress});
+      const result=await optimizeBuild({build,catalog,skillIds,bonuses,mode:optimizerMode,defenseMode,excludeIds},{signal:controller.signal,onProgress:setOptimizerProgress});
       if(controller.signal.aborted)return;
       setOptimizerResult(result);setAnnouncement(result.allCapped?'Optimization finished. Every selected bonus and skill reached its target.':`Optimization finished. ${result.message}`);
     } catch(e) {
@@ -311,7 +313,7 @@ export default function Home() {
       onOpenChange={open=>{if(!open)closeOptimizer();}}
       size="wide"
       title="Optimize your build"
-      description="Pick set or group bonuses and skills. Selection order is priority: bonuses are settled first, then the first skill is maximized before the second, and so on. Armor, charms and decorations are searched; a custom charm is kept fixed, and an equipped weapon is only swapped for a same-type weapon that carries a selected bonus."
+      description="Pick set or group bonuses and skills, then choose how skill points should be distributed. Set bonuses are settled first. Armor, charms and decorations are searched; a custom charm is kept fixed, and an equipped weapon is only swapped for a same-type weapon that carries a selected bonus."
       footer={!optimizerResult?<><button className="primary-button" type="button" disabled={(!optimizerSkills.length&&!optimizerBonuses.length)||optimizing||!catalog} onClick={()=>runOptimizer()}>{optimizing?'Optimizing…':'Run optimizer'}</button>{optimizing?<button className="secondary-button" type="button" onClick={stopOptimizer}>Stop</button>:<button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button>}</>:<><button className="primary-button" type="button" onClick={applyOptimizer}>Apply optimized build</button><button className="secondary-button" type="button" onClick={backToOptimizerSelection}>Back to skill selection</button><button className="secondary-button" type="button" onClick={closeOptimizer}>Cancel</button></>}
     >
       {!optimizerResult?<>
@@ -320,11 +322,16 @@ export default function Home() {
           <span><b>Secondary weapon</b> {build.secondaryWeapon?.equipment.name??'None equipped'}</span>
           <div className="optimizer-charm-row"><span><b>Charm</b> {build.charm?.equipment.random?`${build.charm.equipment.name} · custom charm kept`:'All forged charms considered'}</span><button className="text-button" type="button" disabled={optimizing} onClick={()=>openCharmBuilder('optimizer')}><SlidersHorizontal size={13}/> Build my charm</button></div>
         </div>
+        <fieldset className="optimizer-modes" disabled={optimizing}>
+          <legend>Skill optimization mode</legend>
+          <label className={optimizerMode==='priority'?'selected':''}><input type="radio" name="optimizer-mode" value="priority" checked={optimizerMode==='priority'} onChange={()=>setOptimizerMode('priority')}/><span><strong>Max skill by priority</strong><small>Maximize each skill in list order before moving to the next.</small></span></label>
+          <label className={optimizerMode==='even'?'selected':''}><input type="radio" name="optimizer-mode" value="even" checked={optimizerMode==='even'} onChange={()=>setOptimizerMode('even')}/><span><strong>No max priority (even)</strong><small>Maximize total skill points and favor a balanced spread across selected skills.</small></span></label>
+        </fieldset>
         <div className="optimizer-section"><h3>Set &amp; group bonuses <span>Highest priority · pick a level and drag to reorder</span></h3>
           <div className="optimizer-picker"><SkillMultiSelect value={optimizerBonuses.map(b=>b.name)} onChange={selectBonusNames} skills={bonusSkills} label="Set & group bonuses" noun="bonus" plural="bonuses"/></div>
           {optimizerBonuses.length>0&&<ol className="optimizer-priority" aria-label="Bonus priority">{optimizerBonuses.map((bonus,i)=>{const skill=bonusByName.get(bonus.name),dragging=draggedPriority?.kind==='bonus'&&draggedPriority.name===bonus.name;return <li key={bonus.name} className={dragging?'priority-dragging':''} onDragOver={event=>dragPriorityOver(event,'bonus',bonus.name)} onDrop={event=>{event.preventDefault();finishPriorityDrag();}}><button type="button" className="priority-drag-handle" draggable={!optimizing} disabled={optimizing} aria-label={`Reorder ${bonus.name}. Use up and down arrow keys or drag.`} title="Drag to change priority" onDragStart={event=>startPriorityDrag(event,'bonus',bonus.name)} onDragEnd={finishPriorityDrag} onKeyDown={event=>{if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();moveOptimizerBonus(i,event.key==='ArrowUp'?-1:1);}}}><GripVertical size={16}/></button><span className="priority-index">{i+1}</span><SkillName name={bonus.name} passive/><AppDropdown className="bonus-level-field" triggerClassName="bonus-level" label={`${bonus.name} target level`} value={String(bonus.level)} disabled={optimizing} onChange={value=>setBonusLevel(bonus.name,+value)} options={(skill?bonusRanks(skill):[]).map(rank=>({value:String(rank.level),label:`Lv. ${rank.level} · ${rank.pieces} pieces${rank.name?` · ${rank.name}`:''}`}))}/><label className="optimizer-weapon-skill"><input type="checkbox" checked={bonus.weaponHasSkill} disabled={optimizing} onChange={e=>setBonusWeaponSkill(bonus.name,e.target.checked)}/><span>My weapon has this skill</span></label><span className="priority-actions"><button type="button" aria-label={`Remove ${bonus.name}`} disabled={optimizing} onClick={()=>setOptimizerBonuses(list=>list.filter(item=>item.name!==bonus.name))}><X size={14}/></button></span></li>;})}</ol>}
         </div>
-        <div className="optimizer-section"><h3>Skills <span>Maximized after bonuses · drag to reorder</span></h3>
+        <div className="optimizer-section"><h3>Skills <span>{optimizerMode==='priority'?'Maximized after bonuses in list order':'Total points balanced across selected skills'} · drag to reorder</span></h3>
           <div className="optimizer-picker"><SkillMultiSelect value={optimizerSkills} onChange={setOptimizerSkills} skills={ordinarySkills}/></div>
           {optimizerSkills.length>0&&<ol className="optimizer-priority" aria-label="Skill priority">{optimizerSkills.map((name,i)=>{const dragging=draggedPriority?.kind==='skill'&&draggedPriority.name===name;return <li key={name} className={dragging?'priority-dragging':''} onDragOver={event=>dragPriorityOver(event,'skill',name)} onDrop={event=>{event.preventDefault();finishPriorityDrag();}}><button type="button" className="priority-drag-handle" draggable={!optimizing} disabled={optimizing} aria-label={`Reorder ${name}. Use up and down arrow keys or drag.`} title="Drag to change priority" onDragStart={event=>startPriorityDrag(event,'skill',name)} onDragEnd={finishPriorityDrag} onKeyDown={event=>{if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();moveOptimizerSkill(i,event.key==='ArrowUp'?-1:1);}}}><GripVertical size={16}/></button><span className="priority-index">{optimizerBonuses.length+i+1}</span><SkillName name={name} passive/><span className="priority-actions"><button type="button" aria-label={`Remove ${name}`} disabled={optimizing} onClick={()=>setOptimizerSkills(list=>list.filter(item=>item!==name))}><X size={14}/></button></span></li>;})}</ol>}
         </div>

@@ -3,11 +3,12 @@ import { compatible, equip, decorate, summarize, weaponTypes, type Build, type B
 /**
  * Automatic build optimizer.
  *
- * Objective (deterministic, lexicographic — see `compareScore`):
+ * Objective (deterministic — see `compareScore`):
  *   1..b  achieved level of each selected set/group bonus, capped at the level the
  *         user asked for, in selection (priority) order — bonuses outrank skills
- *   b+1..b+k  capped level of each selected skill, in selection order
- *   then  total capped level of all selected skills
+ *   then  selected skills according to the requested mode: priority compares each
+ *         skill in selection order; even maximizes their total before preferring
+ *         the most balanced completion ratios
  *   then  tie-breakers: weapon attack, free decoration capacity left for the user
  *         (sum of empty slot levels), defense (base or catalog maximum, following
  *         the planner toggle), levels of non-selected skills carried by equipment
@@ -35,9 +36,10 @@ export type OptimizerSlot = typeof optimizerSlots[number];
 export const armorSlots = ['head','chest','arms','waist','legs'] as const satisfies readonly OptimizerSlot[];
 export const weaponSlots = ['weapon','secondaryWeapon'] as const satisfies readonly OptimizerSlot[];
 export const bonusKinds = ['set','group'] as const;
+export type OptimizerMode = 'priority'|'even';
 
 export interface BonusTarget { id:number; level:number; /** The equipped weapon contributes one piece toward this bonus (for example, a Gogmazios weapon's random set bonus). */ weaponHasSkill?:boolean }
-export interface OptimizerInput { build:Build; catalog:Catalog; skillIds:number[]; bonuses?:BonusTarget[]; defenseMode?:'base'|'max'; /** Equipment ids the player does not own; never chosen (equipped weapons are always kept). */ excludeIds?:Iterable<string> }
+export interface OptimizerInput { build:Build; catalog:Catalog; skillIds:number[]; bonuses?:BonusTarget[]; mode?:OptimizerMode; defenseMode?:'base'|'max'; /** Equipment ids the player does not own; never chosen (equipped weapons are always kept). */ excludeIds?:Iterable<string> }
 export interface OptimizerProgress { stage:'prepare'|'search'|'fill'|'finish'; slot?:OptimizerSlot; done:number; total:number; evaluated:number; states:number; merged:number }
 export interface OptimizerOptions { beamWidth?:number; finalists?:number; fillBeamWidth?:number; signal?:AbortSignal; onProgress?:(progress:OptimizerProgress)=>void; yieldControl?:()=>Promise<void>; yieldEveryMs?:number }
 export interface OptimizedSkill { skill:Skill; priority:number; level:number; max:number; capped:boolean }
@@ -61,7 +63,7 @@ interface Candidate extends Scored { equipment:Equipment; bonus:number[]; pool:P
 interface Pick { slot:OptimizerSlot; candidate:Candidate }
 interface State extends Scored { bonus:number[]; pool:Pool; prev:State|null; pick:Pick|null; estimate?:Scored }
 interface BonusSpec { skill:Skill; target:number; needed:number; weaponHasSkill:boolean; ranks:{level:number;pieces:number}[] }
-interface Context { catalog:Catalog; index:Map<number,number>; maxes:number[]; bonusIndex:Map<number,number>; bonusSpecs:BonusSpec[]; defenseMode:'base'|'max'; decoOptions:Map<string,ScoredDecoration[]>; bestFor:Map<string,ScoredDecoration|null> }
+interface Context { catalog:Catalog; index:Map<number,number>; maxes:number[]; bonusIndex:Map<number,number>; bonusSpecs:BonusSpec[]; mode:OptimizerMode; defenseMode:'base'|'max'; decoOptions:Map<string,ScoredDecoration[]>; bestFor:Map<string,ScoredDecoration|null> }
 interface ScoredDecoration extends Scored { decoration:Decoration }
 interface Fill { vec:number[]; free:number; chosen:(ScoredDecoration|null)[]; slots:DecoSlot[]; approximate:boolean }
 
@@ -101,11 +103,21 @@ function bonusCountsOf(ctx:Context,equipment:Equipment) {
 }
 const rankOf = (ctx:Context,bonus:number[]) => bonus.map((count,i)=>bonusLevel(ctx.bonusSpecs[i].ranks,count,ctx.bonusSpecs[i].target));
 
-/** Negative when `a` scores higher than `b`: bonus levels, priority skills in order, skill total, then tie-breakers. */
-export function compareScore(a:Scored,b:Scored) {
+/** Lowest completion ratios first, so lexicographic comparison implements max-min fairness. */
+const balanced = (vec:number[],maxes:number[]) => vec.map((level,i)=>maxes[i]?level/maxes[i]:1).sort((a,b)=>a-b);
+const evenScoreCache=new WeakMap<Scored,{maxes:number[];total:number;balance:number[]}>();
+function evenScore(score:Scored,maxes:number[]){
+  const cached=evenScoreCache.get(score);if(cached?.maxes===maxes)return cached;
+  const value={maxes,total:sum(score.vec),balance:balanced(score.vec,maxes)};evenScoreCache.set(score,value);return value;
+}
+/** Negative when `a` scores higher than `b`: bonus levels, mode-specific skill score, then tie-breakers. */
+export function compareScore(a:Scored,b:Scored,mode:OptimizerMode='priority',maxes:number[]=[]):number {
   for(let i=0;i<a.rank.length;i++){ if(a.rank[i]!==b.rank[i]) return b.rank[i]-a.rank[i]; }
+  if(mode==='even'){
+    const aa=evenScore(a,maxes),bb=evenScore(b,maxes),total=bb.total-aa.total;if(total)return total;
+    for(let i=0;i<aa.balance.length;i++){if(aa.balance[i]!==bb.balance[i])return bb.balance[i]-aa.balance[i];}
+  }
   for(let i=0;i<a.vec.length;i++){ if(a.vec[i]!==b.vec[i]) return b.vec[i]-a.vec[i]; }
-  const total=sum(b.vec)-sum(a.vec); if(total) return total;
   return compareTie(b.tie,a.tie);
 }
 function dominates(a:Scored,b:Scored) {
@@ -132,7 +144,7 @@ function decorationOptions(ctx:Context,slot:DecoSlot):ScoredDecoration[] {
   const key=slotKey(slot); const cached=ctx.decoOptions.get(key); if(cached) return cached;
   const scored:ScoredDecoration[]=ctx.catalog.decorations.filter(d=>compatible(d,slot)&&d.skills.some(s=>ctx.index.has(s.id)))
     .map(decoration=>({decoration,rank:[],vec:vectorOf(decoration.skills,ctx.index,ctx.maxes),tie:[0]}))
-    .sort((a,b)=>compareScore(a,b)||a.decoration.level-b.decoration.level||a.decoration.id-b.decoration.id);
+    .sort((a,b)=>compareScore(a,b,ctx.mode,ctx.maxes)||a.decoration.level-b.decoration.level||a.decoration.id-b.decoration.id);
   const options=paretoPrune(scored,dominates,Infinity);
   ctx.decoOptions.set(key,options); return options;
 }
@@ -146,6 +158,23 @@ function bestDecorationFor(ctx:Context,kind:typeof kinds[number],level:number,sk
 /** Fast lower bound of the fill value: smallest fitting slot first, priority skills first. Used for beam ranking. */
 function greedyEstimate(ctx:Context,vec:number[],pool:Pool):{vec:number[];free:number} {
   const counts=[...pool],current=[...vec],maxes=ctx.maxes;
+  if(ctx.mode==='even'){
+    for(let level=1;level<=maxSlotLevel;level++) for(let kind=0;kind<kinds.length;kind++){
+      const p=kind*maxSlotLevel+level-1;
+      while(counts[p]){
+        let best:ScoredDecoration|null=null,bestRatio=Infinity;
+        for(let i=0;i<maxes.length;i++){
+          if(current[i]>=maxes[i])continue;
+          const option=bestDecorationFor(ctx,kinds[kind],level,i);if(!option)continue;
+          const ratio=current[i]/maxes[i];
+          if(ratio<bestRatio||(ratio===bestRatio&&best&&(sum(option.vec)>sum(best.vec)||(sum(option.vec)===sum(best.vec)&&option.decoration.id<best.decoration.id)))){best=option;bestRatio=ratio;}
+        }
+        if(!best)break;
+        counts[p]--;for(let i=0;i<maxes.length;i++)current[i]=Math.min(maxes[i],current[i]+best.vec[i]);
+      }
+    }
+    return {vec:current,free:poolValue(counts)};
+  }
   for(let i=0;i<maxes.length;i++){
     while(current[i]<maxes[i]){
       let placed=false;
@@ -164,21 +193,21 @@ function greedyEstimate(ctx:Context,vec:number[],pool:Pool):{vec:number[];free:n
 function exactFill(ctx:Context,vec:number[],pool:Pool,beamWidth:number):Fill {
   const slots:DecoSlot[]=[];
   for(let kind=0;kind<kinds.length;kind++) for(let level=maxSlotLevel;level>=1;level--) for(let n=0;n<pool[kind*maxSlotLevel+level-1];n++) slots.push({kind:kinds[kind],level});
-  interface FillState { vec:number[]; free:number; prev:FillState|null; chosen:ScoredDecoration|null }
-  let states:FillState[]=[{vec,free:0,prev:null,chosen:null}];
+  interface FillState extends Scored { free:number; prev:FillState|null; chosen:ScoredDecoration|null }
+  let states:FillState[]=[{rank:[],vec,tie:[0],free:0,prev:null,chosen:null}];
   let approximate=false;
   for(const slot of slots){
     const options=decorationOptions(ctx,slot);
     const merged=new Map<string,FillState>();
     for(const state of states){
       const keep=(next:FillState)=>{ const key=next.vec.join(','); const existing=merged.get(key); if(!existing||next.free>existing.free) merged.set(key,next); };
-      keep({vec:state.vec,free:state.free+slot.level,prev:state,chosen:null});
+      keep({rank:[],vec:state.vec,tie:[state.free+slot.level],free:state.free+slot.level,prev:state,chosen:null});
       for(const option of options){
         if(!option.vec.some((x,i)=>x>0&&state.vec[i]<ctx.maxes[i])) continue;
-        keep({vec:capAdd(state.vec,option.vec,ctx.maxes),free:state.free,prev:state,chosen:option});
+        keep({rank:[],vec:capAdd(state.vec,option.vec,ctx.maxes),tie:[state.free],free:state.free,prev:state,chosen:option});
       }
     }
-    states=[...merged.values()].sort((a,b)=>compareScore({rank:[],vec:a.vec,tie:[a.free]},{rank:[],vec:b.vec,tie:[b.free]}));
+    states=[...merged.values()].sort((a,b)=>compareScore(a,b,ctx.mode,ctx.maxes));
     if(states.length>beamWidth){ states=states.slice(0,beamWidth); approximate=true; }
   }
   const best=states[0]; const chosen:(ScoredDecoration|null)[]=[];
@@ -196,7 +225,7 @@ function candidateOf(ctx:Context,equipment:Equipment):Candidate {
   return {equipment,bonus,rank:rankOf(ctx,bonus),pool:poolOf(equipment.slots),vec:vectorOf(equipment.skills,ctx.index,ctx.maxes),tie:tieOf(ctx,equipment)};
 }
 const candidateDominates = (a:Candidate,b:Candidate) => countsDominate(a.bonus,b.bonus)&&dominates(a,b)&&poolDominates(a.pool,b.pool);
-const compareCandidates = (a:Candidate,b:Candidate) => compareScore(a,b)||sum(b.bonus)-sum(a.bonus)||poolValue(b.pool)-poolValue(a.pool)||sum(b.pool)-sum(a.pool)||a.equipment.id.localeCompare(b.equipment.id);
+const compareCandidates = (ctx:Context,a:Candidate,b:Candidate) => compareScore(a,b,ctx.mode,ctx.maxes)||sum(b.bonus)-sum(a.bonus)||poolValue(b.pool)-poolValue(a.pool)||sum(b.pool)-sum(a.pool)||a.equipment.id.localeCompare(b.equipment.id);
 
 /** Weapons of the same type as the one equipped in `slot` that carry a selected bonus. Empty slots never receive a weapon. */
 export function bonusWeapons(build:Build,catalog:Catalog,slot:'weapon'|'secondaryWeapon',bonusIds:Iterable<number>) {
@@ -250,7 +279,7 @@ function materialize(state:State,fill:Fill,current:Build):{build:Build;pieces:Op
 }
 
 export async function optimizeBuild(input:OptimizerInput,options:OptimizerOptions={}):Promise<OptimizerResult> {
-  const {build,catalog}=input; const defenseMode=input.defenseMode??'base';
+  const {build,catalog}=input; const defenseMode=input.defenseMode??'base',mode=input.mode??'priority';
   const skillIds=[...new Set(input.skillIds)];
   const targets=(input.bonuses??[]).filter((t,i,all)=>all.findIndex(o=>o.id===t.id)===i);
   if(!skillIds.length&&!targets.length) throw new OptimizerError('no-skills','Select at least one skill or set bonus to optimize.');
@@ -262,7 +291,7 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
     return {skill,target:t.level,needed:rank.pieces,weaponHasSkill:t.weaponHasSkill===true,ranks};
   });
   const maxes=skills.map(skillMax);
-  const ctx:Context={catalog,index:new Map(skillIds.map((id,i)=>[id,i])),maxes,bonusIndex:new Map(targets.map((t,i)=>[t.id,i])),bonusSpecs,defenseMode,decoOptions:new Map(),bestFor:new Map()};
+  const ctx:Context={catalog,index:new Map(skillIds.map((id,i)=>[id,i])),maxes,bonusIndex:new Map(targets.map((t,i)=>[t.id,i])),bonusSpecs,mode,defenseMode,decoOptions:new Map(),bestFor:new Map()};
   const beamWidth=Math.max(1,options.beamWidth??8000),finalists=Math.max(1,options.finalists??24),fillBeamWidth=Math.max(1,options.fillBeamWidth??6000);
   const yieldEveryMs=options.yieldEveryMs??12,yieldControl=options.yieldControl??defaultYield;
   const checkAbort=()=>{ if(options.signal?.aborted) throw new OptimizerError('aborted','Optimization cancelled.'); };
@@ -277,7 +306,7 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   const bonusIds=targets.map(t=>t.id);
   const slotLists=optimizerSlots.map(slot=>{
     const raw=slotCandidates(build,catalog,slot,bonusIds,input.excludeIds??[]);
-    const scored=raw.map(e=>candidateOf(ctx,e)).sort(compareCandidates);
+    const scored=raw.map(e=>candidateOf(ctx,e)).sort((a,b)=>compareCandidates(ctx,a,b));
     return {slot,considered:raw.length,options:raw.length>1?paretoPrune(scored,candidateDominates,Infinity):scored};
   });
   if(targets.length){
@@ -288,8 +317,8 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
   }
   const totalSlots=slotLists.reduce((n,l)=>n+Math.max(0,...l.options.map(o=>o.equipment.slots.length)),0);
   const encode=keyEncoder(bonusSpecs.map(b=>b.needed),maxes,totalSlots);
-  const compareRaw=(a:State,b:State)=>compareScore(a,b)||sum(b.bonus)-sum(a.bonus)||poolValue(b.pool)-poolValue(a.pool)||sum(b.pool)-sum(a.pool);
-  const compareEstimates=(a:State,b:State)=>compareScore(a.estimate!,b.estimate!)||compareRaw(a,b);
+  const compareRaw=(a:State,b:State)=>compareScore(a,b,mode,maxes)||sum(b.bonus)-sum(a.bonus)||poolValue(b.pool)-poolValue(a.pool)||sum(b.pool)-sum(a.pool);
+  const compareEstimates=(a:State,b:State)=>compareScore(a.estimate!,b.estimate!,mode,maxes)||compareRaw(a,b);
   /** Bonus pieces the slots after `slotIndex` can still add, per selected bonus. */
   const supplyAfter=slotLists.map((_,slotIndex)=>bonusSpecs.map((spec,i)=>Math.min(spec.needed,slotLists.slice(slotIndex+1).reduce((n,l)=>n+Math.max(0,...l.options.map(o=>o.bonus[i])),0))));
   /** Beam order for intermediate stages: a bonus level still reachable later outranks everything, then the fewest
@@ -340,7 +369,7 @@ export async function optimizeBuild(input:OptimizerInput,options:OptimizerOption
     const fill=exactFill(ctx,state.vec,state.pool,fillBeamWidth);
     if(fill.approximate) approximate=true;
     const score:Scored={rank:state.rank,vec:fill.vec,tie:[state.tie[0],fill.free,...state.tie.slice(1)]};
-    if(!best||compareScore(score,best.score)<0) best={state,fill,score};
+    if(!best||compareScore(score,best.score,mode,maxes)<0) best={state,fill,score};
     await maybeYield();
   }
   const {build:optimized,pieces}=best?materialize(best.state,best.fill,build):{build:{},pieces:[]};
