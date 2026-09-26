@@ -113,8 +113,8 @@ export function AppDropdown(props: AppDropdownProps) {
   }, [open]);
 
   useEffect(() => {
-    if (open && searchable) searchRef.current?.focus();
-  }, [open, searchable]);
+    if (open && searchable && menuLayout?.host) searchRef.current?.focus({preventScroll:true});
+  }, [open, searchable, menuLayout?.host]);
 
   const close = () => {
     setOpen(false);
